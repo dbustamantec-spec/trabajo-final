@@ -2,9 +2,12 @@
 # https://portalsivigila.ins.gov.co/Paginas/Buscador.aspx#
 # Cada archivo es un xlsx, y uno de ellos pesa más de 100 megas, por lo que
 # GitHub no lo admite. Se intentó trabajar con .zip y .csv, pero se sigue
-# superando la capacidad máxima. Por tanto, solo se dejo la base final, el
-# siguiente código fue el implementado, sin embargo está como comentario,
-# porque no se pudieron tener las bases originales en el repositorio.
+# superando la capacidad máxima. Por tanto, en "crudos" dentro de "datos"
+# están todas las bases de datos crudas excepto la que supera el peso
+# permitido (la del 2024), por esto todo este código está comentado para 
+# evitar problemas con el dataset no cargado. Si se desea correr este 
+# código se debe ingresar a la página de sivigila y descargar la base de 
+# datos que falta (casos de dengue 2024). 
 
 #library(dplyr)
 #library(lubridate)
@@ -29,17 +32,17 @@
 #}
 
 
-#ruta1 <- here("R", "datasets", "Datos_2015_210.xlsx")
-#ruta2 <- here("R", "datasets", "Datos_2016_210.xlsx")
-#ruta3 <- here("R", "datasets", "Datos_2017_210.xlsx")
-#ruta4 <- here("R", "datasets", "Datos_2018_210.xlsx")
-#ruta5 <- here("R", "datasets", "Datos_2019_210.xlsx")
-#ruta6 <- here("R", "datasets", "Datos_2020_210.xlsx")
-#ruta7 <- here("R", "datasets", "Datos_2021_210.xlsx")
-#ruta8 <- here("R", "datasets", "Datos_2022_210.xlsx")
-#ruta9 <- here("R", "datasets", "Datos_2023_210.xlsx")
-#ruta10 <- here("R", "datasets", "Datos_2024_210.xlsx")
-#ruta11 <- here("R", "datasets", "Datos_2025_210.xlsx")
+#ruta1 <- here("datos", "crudos", "Datos_2015_210.xlsx")
+#ruta2 <- here("datos", "crudos", "Datos_2016_210.xlsx")
+#ruta3 <- here("datos", "crudos", "Datos_2017_210.xlsx")
+#ruta4 <- here("datos", "crudos", "Datos_2018_210.xlsx")
+#ruta5 <- here("datos", "crudos", "Datos_2019_210.xlsx")
+#ruta6 <- here("datos", "crudos", "Datos_2020_210.xlsx")
+#ruta7 <- here("datos", "crudos", "Datos_2021_210.xlsx")
+#ruta8 <- here("datos", "crudos", "Datos_2022_210.xlsx")
+#ruta9 <- here("datos", "crudos", "Datos_2023_210.xlsx")
+#ruta10 <- here("datos", "crudos", "Datos_2024_210.xlsx")
+#ruta11 <- here("datos", "crudos", "Datos_2025_210.xlsx")
 
 #b1 <- read_xlsx(ruta1)
 #b2 <- read_xlsx(ruta2, guess_max = 100000)
@@ -88,5 +91,5 @@
 
 # Se contruye una unión de los anteriores datasets y se crea un archivo csv:
 #base_final <- bind_rows(d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11)
-#ruta <- here("R", "datasets", "serie_dengue_2015_2025.csv")
+#ruta <- here("datos", "procesados", "serie_dengue_2015_2025.csv")
 #write_csv(base_final, ruta)
