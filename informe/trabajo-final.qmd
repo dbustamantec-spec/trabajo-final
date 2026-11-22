@@ -4,8 +4,8 @@ subtitle: "Series de Tiempo (3009297)"
 lang: es
 bibliography: referencias.bib
 params:
-  fecha_corte: "2026-06-30"
-  horizonte: 8
+  fecha_corte: "2025-12-01"
+  horizonte: 6
 format:
   html:
     toc: true
@@ -29,7 +29,7 @@ Noviembre 24, 2026.
 \newpage
 
 ```{r}
-source("../R/02-tabla_comparativa_literatura.R")
+source("../R/00-correr_todo.R")
 ```
 
 ## Tema
@@ -91,5 +91,89 @@ El RMSE depende de la escala de cada serie (semanal, anual, país, etc.) y ningu
 La revisión de la literatura evidencia que en ninguno de los casos se usa un promedio histórico como referente, tampoco incluyen un naive estacional (de hecho en algunas referencias ni siquiera usan referentes, por ejemplo, @hasan2024dengue) y los métodos se comparan por diferencias de MAPE, MAE o RMSE sin prueba de significancia. Además, de las fuentes seleccionadas ninguna aplica Diebold-Mariano ni reporta MASE. Por otro lado, seis de los ocho estudios evalúan sobre un solo año o bloque de prueba, con la salvedad de la validación cruzada por temporadas de @zhao2020machine y @chen2025assessing que reevalúa con una ventana móvil. Además, la incertidumbre casi no se evalúa, @eastin2014intra la reporta de forma cualitativa y solo @chen2025assessing calcula la cobertura empírica por horizonte, con valores por debajo del nominal (entre 80.8% y 92.3% frente al 95%). Por último, los errores se concentran en los brotes: subestimaciones en 2017 en @navarro2021assessing, en lo dicho por @zhao2020machine y la recomendación de @martinez2011sarima sobre años epidémicos. Ningún estudio estratifica la evaluación entre periodos de brote y endémicos. Además, ninguno evalúa la serie mensual nacional de Colombia a seis meses, los estudios colombianos son semanales, urbanos, departamentales o no evalúan el pronóstico contra datos posteriores.
 
 Este trabajo se enfoca sobre estos vacíos. Para ello, se evalúa la capacidad predictiva de un modelo SARIMA sobre la serie mensual de casos confirmados de dengue en Colombia a un horizonte de seis meses, contrastándolo contra un referente ingenuo, medias estacionales y suavizamiento exponencial. Se consideran origen móvil, MASE y RMSE, cobertura empírica de los intervalos al 95% y prueba de Diebold-Mariano con corrección de horizonte, estratificando el análisis entre periodos de brote y endémicos.
+
+## Solución al problema
+
+### ¿Qúe dice la serie visualmente?
+
+En primer lugar, se procede a graficar la serie, su ACF y PACF, con el fin de identificar patrones o comportamientos. Se cargan los datos y se convierten en tipo `ts`, que es el formato soportado por las funciones hechas.
+
+```{r}
+ruta_datos <- here("datos", "procesados", "serie_dengue_2015_2025.csv") 
+datos <- read.csv(ruta_datos)
+serie <- ts(datos$casos_confirmados, start = c(2015, 1),
+            frequency = 12)
+```
+
+```{r, fig.width=6, fig.height=7}
+graficas(serie = serie, titulo = "Gráficas iniciales de la serie")
+```
+
+A partir del gráfico de la serie se nota un comportamiento repetitivo de crecer y decrecer desde 2015 hasta 2023, donde los casos fluctuan entre 500 a 10000 casos. Luego, en el 2024 se nota un pico que representa un aumento en el número de casos considerablemente, lo cual es un indicio de tendencia. Esto se se refuerza con la ACF que decae lentamente.
+
+La PACF tiene un en el primer rezago un valor muy cercano a 1, por lo que el valor de un mes está muy condicionado por el nivel del mes anterior.
+
+En el ACF y PACF no hay picos aislados en los rezagos múltiplos de 12. Por lo que, de forma descriptiva, no parece quehaber una estacionalidad anual fuerte evidente en los datos crudos.
+
+### Transformación
+
+En primer lugar, es necesario verificar si es necesario aplicar algún tipo de transformación a la varianza.
+
+```{r}
+transformacion <- trans(z = serie)
+transformacion
+```
+
+La estimación de $\lambda$ y su respectivo intervalo de confianza son respectivamente:
+
+```{r, fig.width=6, fig.height=7}
+transformacion$lambda_estimado
+transformacion$intervalo_confianza
+transformacion$grafico
+```
+
+Con $\hat{\lambda}=0.08$ y un intervalo de confianza al 95% de $(-0.05, 0.21)$, se tiene que el $0$ está incluido, por lo que es necesario aplicar una transformación y la más adecuada según Box-Cox es una logaritmica.
+
+Se aplica logaritmo a la serie:
+
+```{r}
+serie <- log(serie)
+```
+
+### Diferenciación
+
+Se plantea la prueba de Dickey-Fuller aumentada:
+
+$$
+H_0: \gamma=0 \text{ (Hay raíz unitaria) vs. } H_1: \gamma>0 \text{ (No hay raíz unitaria)}
+$$
+
+Se hace la prueba de hipótesis primero con $d=0$, si se concluye que hay raíz unitaria, se procede a hacerlo con $d=1$, y luego con $d=2$. Se pone el límite en 2, pues en la práctica estos valores son los más comunes.
+
+Cuando$d = 0$ y `probar_tendencia = TRUE` se estima el modelo completo con intercepto y tendencia determinista (`type = "trend"`, estadístico $\tau_3$). Se evalúa la significancia individual de la tendencia (`tt`) verificando si $\vert{}t\vert{} < 2$. Si la tendencia no es significativa, se descarta y se vuelve a hacer la prueba solo con intercepto (`type = "drift"`, estadístico $\tau_2$) para no perder potencia estadística.
+
+Cuando $d \ge 1$ (serie ya diferenciada) se estima el modelo con intercepto (`type = "drift"`, estadístico $\tau_2$), ya que diferenciar una serie con tendencia lineal deja una constante distinta de cero.. Luego, se verifica si ese intercepto es significativo ($\vert{}t\vert{} \ge 2$). Si no lo es ($\vert{}t\vert{} < 2$), reduce el modelo al caso sin intercepto ni tendencia (`type = "none"`, estadístico $\tau_1$).
+
+```{r, fig.width=6, fig.height=7}
+dife_bc(serie)
+```
+
+Cuando $d=0$, se tiene que $|t=2.78|>2$, por lo que sí hay tendencia deterministica significativa. Por esto, se mantiene el modelo completo con intercepto y tendencia lineal (`type = "trend"`, estadístico $\tau_3$). Además, como $\tau_3=-3.34>-3.43$, se procede a no rechazar la hipótesis nula, por lo que existe una raíz unitaria y se sigue con $d=1$:
+
+Al diferenciar la serie una vez, se evaluó primero el modelo con deriva (`drift`), pero como el $t$ del intercepto resultó no significativo, se redujo la ecuación al modelo sin intercepto ni tendencia (`type = "none"`, estadístico $\tau_1$). Esto indica que la serie diferenciada oscila alrededor de cero. $\tau_1=-5.06<-1.95$, por lo que se rechaza la hipótesis nula, y se concluye que no hay raíz unitaria y que la serie es estacionaria con una diferencia $d=1$.
+
+```{r}
+serie <- diff(serie, differences = 1)
+```
+
+ˆ𝜏3 =−3.99 \<5.92
+
+```{r}
+bc_perfil(serie)
+```
+
+```{r, fig.width=6, fig.height=7}
+bc_dif(serie)
+```
 
 ## Referencias bibliográficas
