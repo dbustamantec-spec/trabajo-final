@@ -8,3 +8,5 @@ renv/cellar/
 renv/lock/
 renv/python/
 renv/staging/
+renv
+.Rprofile
