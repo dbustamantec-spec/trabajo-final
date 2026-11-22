@@ -1,13 +1,30 @@
 ---
-title: "Pronostico de la incidencia semanal de dengue en Antioquia"
-format: 
+title: "Trabajo final - Pronóstico de casos de dengue en Colombia (2015-2025)"
+subtitle: "Series de Tiempo (3009297)"
+lang: es
+bibliography: referencias.bib
+params:
+  fecha_corte: "2026-06-30"
+  horizonte: 8
+format:
   html:
     toc: true
-params:
-fecha_corte: "2026-06-30"
-horizonte: 8
-bibliography: referencias.bib
+    toc-location: left
+    embed-resources: true
+    theme: darkly
 ---
+
+::: {style="margin-bottom: 2rem; line-height: 1.6;"}
+**Autores:** Daniel Bustamante Cortés, Andrés Felipe López Díaz y Viviana Astrid León Oróstegui.
+
+**Docente:** Juan Pablo Valencia Arango.
+
+Departamento de Estadística, Facultad de Ciencias<br> Universidad Nacional de Colombia, Sede Medellín.
+
+Noviembre 24, 2026.
+:::
+
+------------------------------------------------------------------------
 
 \newpage
 
