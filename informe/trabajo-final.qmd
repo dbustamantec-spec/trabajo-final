@@ -1,0 +1,78 @@
+---
+title: "Pronostico de la incidencia semanal de dengue en Antioquia"
+format: 
+  html:
+    toc: true
+params:
+fecha_corte: "2026-06-30"
+horizonte: 8
+bibliography: referencias.bib
+---
+
+\newpage
+
+```{r}
+source("../R/02-tabla_comparativa_literatura.R")
+```
+
+## Tema
+
+El tema es el comportamiento de casos confirmados de dengue en Colombia. Mientras que la serie es el número de casos confirmados por dengue a nivel nacional del año 2015 al 2025, con frecuencia mensual y periodo desde enero del 2015 hasta diciembre del 2025. Por lo que el número de observaciones es 132.
+
+En este trabajo se consideran casos confirmados los registrados en la base de microdatos de Sivigila [@ins2026dengue] con clasificación de caso confirmado, sin distinguir si la confirmación fue por laboratorio o por nexo epidemiológico. En las bases de datos elegidas habían casos de dengue "posibles", pero debido a que no se tiene certeza del diagnóstico se descartaron las observaciones con este atributo.
+
+## Pregunta
+
+*¿Qué tanto mejora un modelo SARIMA el pronóstico de la cantidad de casos confirmados de dengue en Colombia con frecuencia mensual a un horizonte de 6 meses, medido con MASE y RMSE, en comparación a un pronóstico de medias estacionales, referente ingenuo y a un suavizamiento exponencial, con el fin de tener una idea clara anticipada sobre el número y distribución de personal y recursos médicos por parte de la Dirección de Epidemiología y Demografía del Ministerio de Salud y Protección Social?*
+
+Que la Dirección de Epidemiología y Demografía del Ministerio de Salud y Protección Social pueda planificar con al menos seis meses de antelación la contratación de personal, la distribución de recursos médicos y el abastecimiento de insumos para la atención del dengue es de vital importancia para planificar estrategias de prevención o asistencia a las comunidades más sensibles a este fenómeno. Si el pronóstico subestima la cantidad de casos esperados, se generan déficit de personal y medicamentos, alterando la calidad de la atención. Si por el contrario se sobreestima la demanda, se asignan recursos que no se requieren, desperdiciando dinero y mano de obra.
+
+Si el modelo SARIMA muestra un MASE y un RMSE menores a los métodos planteados como referentes y además presenta una diferencia significativamente distinta de cero en la prueba de Diebold-Mariano corregida por horizonte, entonces se usará este modelo para mejorar las proyecciones y la asignación anticipada de recursos. Si, por el contrario, los métodos más simples resultan igual o mejor que el SARIMA, se mantendrá uno de los modelos más simples, el que menor error (RMSE y/o MASE) presente, reduciendo la complejidad, pero sin perder fiabilidad.
+
+En caso de dar una respuesta negativa, se concluiría que la complejidad adicional agregada por el modelo SARIMA no aporta un valor significativo para la planificación de recursos médicos por parte del Ministerio de Salud y Protección Social. Se llega a esto si el RMSE y/o MASE del modelo SARIMA es mayor o igual al RMSE y/o MASE de alguno de los otros métodos de pronóstico.
+
+En un estudio de enfermedades como el dengue se deben considerar periodos endémicos y de brote, por lo que el desempeño de los modelos SARIMA frente a los referentes se estratificará y evaluará de manera independiente: una submuestra de brote epidémico, el cual abarca epidemias de dengue nacionales y otra submuestra endémica, en los cuales se ubican los periodos habituales o de baja incidencia. Evaluar los subperiodos por separado permite verificar si la precisión del SARIMA realmente se sostiene en contingencias o si su ventaja frente al referente ingenuo se limita a periodos de menos volátiles.
+
+## Usuario
+
+El usuario es la Dirección de Epidemiología y Demografía del Ministerio de Salud y Protección Social, pues para tener un mejor manejo y administración del personal y recursos médicos ante el dengue, necesitan saber si un modelo SARIMA ofrece una ventaja real sobre repetir el número de casos del último mes observado, usar el promedio histórico del mismo mes en años anteriores o aplicar suavizamiento exponencial, todo esto en busca de asistir a los afectados y/o prevenir nuevos casos de la forma más eficaz posible.
+
+## Objetivo general
+
+Evaluar la capacidad de pronóstico de modelos SARIMA frente a los referentes propuestos medias estacionales, suavizamiento exponencial y referente ingenuo en la predicción mensual de número de casos confirmados de dengue en Colombia a un horizonte de 6 meses (del 2015 al 2025), implementando la validación de origen móvil evaluada con MASE y RMSE y la prueba de Diebold-Mariano.
+
+## Objetivos específicos
+
+- Caracterizar la estructura de tendencia, estacionalidad y componentes de la serie mensual de casos confirmados de dengue y determinar el orden de integración regular y estacional mediante las pruebas ADF, PP y KPSS. Se usa como producto gráficos de descomposición de STL y tablas resumen de pruebas de raíces unitarias.
+
+- Estimar y seleccionar el modelo SARIMA más adecuado entre los candidatos, mediante una tabla de comparación y diagnóstico de residuos, verificando estacionariedad e invertibilidad.
+
+- Cuantificar y comparar el error de pronóstico de cada método por horizonte (1 a 6 meses) con MASE y RMSE, mediante tablas y prueba de Diebold-Mariano con corrección de horizonte.
+
+- Evaluar la cobertura empírica de los intervalos de predicción al 95% de confianza por horizonte de pronóstico. El producto asociado es una tabla que muestra la proporción real de veces que los valores de predicción observados están dentro de los intervalos calculados.
+
+- Realizar un análisis de sensibilidad sobre la estabilidad de los pronósticos evaluando variaciones en la ventana de entrenamiento y de como afectan los datos atípicos al modelo. Se hace mediante una tabla comparativa de métricas con diferentes especificaciones de sensibilidad.
+
+## Revisión de literatura
+
+La búsqueda de literatura se realizó usando Google Scholar y PubMed. Para la primera, se estructuró la siguiente cadena de búsqueda: `("dengue") AND (forecast* OR "time series" OR ARIMA OR SARIMA) AND (Colombia OR "Latin America" OR monthly)`. En PubMed se utilizó la misma sintaxis en términos MeSH y etiquetas de campo `[tiab]` para el mismo periodo. Adicionalmente, se aplicó rastreo de citas tomando como documento semilla el estudio de @chen2025assessing, a partir del cual se exploraron sus referencias (61) y se lograron ubicar estudios que con la cadena no se pudieron identificar como @gharbi2011time y @zhao2020machine.
+
+Como criterios de inclusión, se seleccionaron artículos arbitrados publicados entre 2011 y 2025 que pronosticaran el número de casos de dengue utilizando series de tiempo de la familia ARIMA/SARIMA y que reportaran el horizonte de evaluación. Los criterios de exclusión aplicados fueron: estudios puramente descriptivos, artículos que solo usaran técnicas de machine learning sin utilizar los modelos de interés (ARIMA/SARIMA) y fuentes no arbitradas. Un factor clave que se consideró como factor de inclusión fue el de reporte de métricas de evaluación, todas las fuentes cuentan con este, excepto @martinez2011sarima, el cual se dejó debido a que es de los pocos estudios que usan como enfoque central un modelo SARIMA univariado, por lo que es de alta relevancia para el estudio.
+
+```{r}
+tabla_comp_lit()
+```
+
+Con lo visto con la literatura se tiene que los modelos SARIMA representan adecuadamente el comportamiento del dengue a lo largo del tiempo y su ventaja se concentra en horizontes cortos (@chen2025assessing y @gharbi2011time). El aporte de las covariables en algunos casos mejora los pronósticos, sobre todo cuando hay brotes severos (@eastin2014intra y @chen2025assessing), pero en otros estudios el efecto no es significativo (@navarro2021assessing ).
+
+### Calibración
+
+El RMSE depende de la escala de cada serie (semanal, anual, país, etc.) y ninguna de las fuentes tiene la misma escala que la serie de estudio, por lo que las cifras de las fuentes no sirven como umbrales directos. Lo que sí se puede extraer son comportamientos relativos, que no dependen de la escala. En primer lugar, el error crece con el horizonte, con un ARIMA sin covariables como @chen2025assessing que reportan un RMSE de 124.33 a una semana, 277.48 a cuatro y 583.04 a doce. Por otro lado, las ganancias de un modelo sobre otro suelen ser pequeñas. En @hasan2024dengue, el SARIMA reduce el RMSE en 3.1% frente al ARIMA (5175.8 frente a 5343.2). En @navarro2021assessing, los RMSE del SARIMA, el SARIMAX y la LSTM (25.83, 25.76 y 26.16) difieren menos de 2% entre sí. Diferencias tan pequeñas son difíciles de distinguir del ruido y las métricas pueden ordenar los modelos de manera distinta, lo que justifica evaluar con la prueba de Diebold-Mariano y reportar MASE y RMSE. También, la cobertura de los intervalos tiende a quedar por debajo del nivel nominal. @chen2025assessing reportan coberturas de entre 86.5% y 92.3% para ARIMA frente al 95%. Por ello, la cobertura empírica de los intervalos del SARIMA se interpretará frente al 95%, y valores en el rango de 86.5% a 92.3% se consideran válidos con lo visto en la literatura. En consecuencia, el modelo SARIMA se compara con los referentes propuestos y no con valores de otros estudios, es decir, con la reducción del RMSE y del MASE frente al mejor referente en el horizonte y junto a la significancia de la prueba de Diebold-Mariano.
+
+### Brecha
+
+La revisión de la literatura evidencia que en ninguno de los casos se usa un promedio histórico como referente, tampoco incluyen un naive estacional (de hecho en algunas referencias ni siquiera usan referentes, por ejemplo, @hasan2024dengue) y los métodos se comparan por diferencias de MAPE, MAE o RMSE sin prueba de significancia. Además, de las fuentes seleccionadas ninguna aplica Diebold-Mariano ni reporta MASE. Por otro lado, seis de los ocho estudios evalúan sobre un solo año o bloque de prueba, con la salvedad de la validación cruzada por temporadas de @zhao2020machine y @chen2025assessing que reevalúa con una ventana móvil. Además, la incertidumbre casi no se evalúa, @eastin2014intra la reporta de forma cualitativa y solo @chen2025assessing calcula la cobertura empírica por horizonte, con valores por debajo del nominal (entre 80.8% y 92.3% frente al 95%). Por último, los errores se concentran en los brotes: subestimaciones en 2017 en @navarro2021assessing, en lo dicho por @zhao2020machine y la recomendación de @martinez2011sarima sobre años epidémicos. Ningún estudio estratifica la evaluación entre periodos de brote y endémicos. Además, ninguno evalúa la serie mensual nacional de Colombia a seis meses, los estudios colombianos son semanales, urbanos, departamentales o no evalúan el pronóstico contra datos posteriores.
+
+Este trabajo se enfoca sobre estos vacíos. Para ello, se evalúa la capacidad predictiva de un modelo SARIMA sobre la serie mensual de casos confirmados de dengue en Colombia a un horizonte de seis meses, contrastándolo contra un referente ingenuo, medias estacionales y suavizamiento exponencial. Se consideran origen móvil, MASE y RMSE, cobertura empírica de los intervalos al 95% y prueba de Diebold-Mariano con corrección de horizonte, estratificando el análisis entre periodos de brote y endémicos.
+
+## Referencias bibliográficas
