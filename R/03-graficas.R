@@ -6,10 +6,10 @@ graficas <- function(serie, titulo){
     labs(title = "Serie de tiempo", x = "Tiempo", y = "Casos") +
     theme_minimal()
   
-  g2 <- ggAcf(serie, color = "darkslategray", lag.max = 30) +
+  g2 <- ggAcf(serie, color = "darkslategray", lag.max = 50) +
     labs(title = "Correlograma ACF") +
     theme_minimal()
-  g3 <- ggPacf(serie, color = "darkslategray", lag.max = 30) +
+  g3 <- ggPacf(serie, color = "darkslategray", lag.max = 50) +
     labs(title = "Correlograma PACF") + 
     theme_minimal()
   (g1 / (g2 + g3)) + 
@@ -23,7 +23,7 @@ graficas_dif <- function(serie, titulo){
   library(ggplot2); library(forecast);library(patchwork)
   library(ggfortify)
   n <- length(serie)
-  acf_obj <- acf(serie, lag.max = 30, plot = FALSE)
+  acf_obj <- acf(serie, lag.max = 50, plot = FALSE)
   r <- as.numeric(acf_obj$acf)[-1]
   lags <- 1:length(r)
   
@@ -42,7 +42,7 @@ graficas_dif <- function(serie, titulo){
     geom_step(aes(y = inf), direction = "mid", linetype = "dashed", color = "steelblue") +
     labs(title = "ACF (Banda de Bartlett)", x = "Rezago", y = "ACF") +
     theme_minimal()
-  g3 <- ggPacf(serie, color = "darkslategray", lag.max = 30) +
+  g3 <- ggPacf(serie, color = "darkslategray", lag.max = 50) +
     labs(title = "PACF") +
     theme_minimal()
   (g1 / (g2 + g3)) + 

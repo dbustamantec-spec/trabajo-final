@@ -11,7 +11,7 @@ format:
     toc: true
     toc-location: left
     embed-resources: true
-    theme: darkly
+    theme: flatly
 ---
 
 ::: {style="margin-bottom: 2rem; line-height: 1.6;"}
@@ -28,7 +28,7 @@ Noviembre 24, 2026.
 
 \newpage
 
-```{r}
+```{r, message=FALSE, warning=FALSE}
 source("../R/00-correr_todo.R")
 ```
 
@@ -60,7 +60,7 @@ Evaluar la capacidad de pronóstico de modelos SARIMA frente a los referentes pr
 
 ## Objetivos específicos
 
-- Caracterizar la estructura de tendencia, estacionalidad y componentes de la serie mensual de casos confirmados de dengue y determinar el orden de integración regular y estacional mediante las pruebas ADF, PP y KPSS. Se usa como producto gráficos de descomposición de STL y tablas resumen de pruebas de raíces unitarias.
+- Caracterizar la estructura de tendencia y componentes de la serie mensual de casos confirmados de dengue y determinar el orden de integración regular y estacional mediante las pruebas ADF, PP y KPSS. Se usa como producto gráficos de descomposición de STL y tablas resumen de pruebas de raíces unitarias.
 
 - Estimar y seleccionar el modelo SARIMA más adecuado entre los candidatos, mediante una tabla de comparación y diagnóstico de residuos, verificando estacionariedad e invertibilidad.
 
@@ -72,7 +72,7 @@ Evaluar la capacidad de pronóstico de modelos SARIMA frente a los referentes pr
 
 ## Revisión de literatura
 
-La búsqueda de literatura se realizó usando Google Scholar y PubMed. Para la primera, se estructuró la siguiente cadena de búsqueda: `("dengue") AND (forecast* OR "time series" OR ARIMA OR SARIMA) AND (Colombia OR "Latin America" OR monthly)`. En PubMed se utilizó la misma sintaxis en términos MeSH y etiquetas de campo `[tiab]` para el mismo periodo. Adicionalmente, se aplicó rastreo de citas tomando como documento semilla el estudio de @chen2025assessing, a partir del cual se exploraron sus referencias (61) y se lograron ubicar estudios que con la cadena no se pudieron identificar como @gharbi2011time y @zhao2020machine.
+La búsqueda de literatura se realizó usando Google Scholar y PubMed. Para la primera, se estructuró la siguiente cadena de búsqueda: `("dengue") AND (forecast* OR "time series" OR ARIMA OR SARIMA) AND (Colombia OR "Latin America" OR monthly)`. En PubMed se utilizó la misma sintaxis en términos MeSH y etiquetas de campo `[tiab]` para el mismo periodo. Es importante resaltar que no hay muchos artículos que apliquen modelos SARIMA como modelo principal, en la mayoria de casos se usan SARIMAX, pero como estos modelos provienen de la misma familia se consideraron óptimos para este estudio. Adicionalmente, se aplicó rastreo de citas tomando como documento semilla el estudio de @chen2025assessing, a partir del cual se exploraron sus referencias (61) y se lograron ubicar estudios que con la cadena no se pudieron identificar como @gharbi2011time y @zhao2020machine.
 
 Como criterios de inclusión, se seleccionaron artículos arbitrados publicados entre 2011 y 2025 que pronosticaran el número de casos de dengue utilizando series de tiempo de la familia ARIMA/SARIMA y que reportaran el horizonte de evaluación. Los criterios de exclusión aplicados fueron: estudios puramente descriptivos, artículos que solo usaran técnicas de machine learning sin utilizar los modelos de interés (ARIMA/SARIMA) y fuentes no arbitradas. Un factor clave que se consideró como factor de inclusión fue el de reporte de métricas de evaluación, todas las fuentes cuentan con este, excepto @martinez2011sarima, el cual se dejó debido a que es de los pocos estudios que usan como enfoque central un modelo SARIMA univariado, por lo que es de alta relevancia para el estudio.
 
@@ -88,7 +88,7 @@ El RMSE depende de la escala de cada serie (semanal, anual, país, etc.) y ningu
 
 ### Brecha
 
-La revisión de la literatura evidencia que en ninguno de los casos se usa un promedio histórico como referente, tampoco incluyen un naive estacional (de hecho en algunas referencias ni siquiera usan referentes, por ejemplo, @hasan2024dengue) y los métodos se comparan por diferencias de MAPE, MAE o RMSE sin prueba de significancia. Además, de las fuentes seleccionadas ninguna aplica Diebold-Mariano ni reporta MASE. Por otro lado, seis de los ocho estudios evalúan sobre un solo año o bloque de prueba, con la salvedad de la validación cruzada por temporadas de @zhao2020machine y @chen2025assessing que reevalúa con una ventana móvil. Además, la incertidumbre casi no se evalúa, @eastin2014intra la reporta de forma cualitativa y solo @chen2025assessing calcula la cobertura empírica por horizonte, con valores por debajo del nominal (entre 80.8% y 92.3% frente al 95%). Por último, los errores se concentran en los brotes: subestimaciones en 2017 en @navarro2021assessing, en lo dicho por @zhao2020machine y la recomendación de @martinez2011sarima sobre años epidémicos. Ningún estudio estratifica la evaluación entre periodos de brote y endémicos. Además, ninguno evalúa la serie mensual nacional de Colombia a seis meses, los estudios colombianos son semanales, urbanos, departamentales o no evalúan el pronóstico contra datos posteriores.
+La revisión de la literatura evidencia que en ninguno de los casos se usa un promedio histórico como referente, tampoco incluyen un naive estacional (de hecho en algunas referencias ni siquiera usan referentes, por ejemplo, @hasan2024dengue) y los métodos se comparan por diferencias de MAPE, MAE o RMSE sin prueba de significancia. Además, de las fuentes seleccionadas ninguna aplica Diebold-Mariano ni reporta MASE. Por otro lado, seis de los ocho estudios evalúan sobre un solo año o bloque de prueba, con la salvedad de la validación cruzada por temporadas de @zhao2020machine y @chen2025assessing que reevalúa con una ventana móvil. Además, la incertidumbre casi no se evalúa, @eastin2014intra la reporta de forma cualitativa y solo @chen2025assessing calcula la cobertura empírica por horizonte, con valores por debajo del nominal (entre 80.8% y 92.3% frente al 95%). Por último, los errores se concentran en los brotes: subestimaciones en 2017 en @navarro2021assessing, en lo dicho por @zhao2020machine y la recomendación de @martinez2011sarima sobre años epidémicos. Ningún estudio estratifica la evaluación entre periodos de brote y endémicos. Ninguno evalúa la serie mensual nacional de Colombia a seis meses, los estudios colombianos son semanales, urbanos, departamentales o no evalúan el pronóstico contra datos posteriores.
 
 Este trabajo se enfoca sobre estos vacíos. Para ello, se evalúa la capacidad predictiva de un modelo SARIMA sobre la serie mensual de casos confirmados de dengue en Colombia a un horizonte de seis meses, contrastándolo contra un referente ingenuo, medias estacionales y suavizamiento exponencial. Se consideran origen móvil, MASE y RMSE, cobertura empírica de los intervalos al 95% y prueba de Diebold-Mariano con corrección de horizonte, estratificando el análisis entre periodos de brote y endémicos.
 
@@ -105,34 +105,37 @@ serie <- ts(datos$casos_confirmados, start = c(2015, 1),
             frequency = 12)
 ```
 
-```{r, fig.width=6, fig.height=7}
+```{r, fig.width=6, fig.height=6}
 graficas(serie = serie, titulo = "Gráficas iniciales de la serie")
 ```
 
 A partir del gráfico de la serie se nota un comportamiento repetitivo de crecer y decrecer desde 2015 hasta 2023, donde los casos fluctuan entre 500 a 10000 casos. Luego, en el 2024 se nota un pico que representa un aumento en el número de casos considerablemente, lo cual es un indicio de tendencia. Esto se se refuerza con la ACF que decae lentamente.
 
-La PACF tiene un en el primer rezago un valor muy cercano a 1, por lo que el valor de un mes está muy condicionado por el nivel del mes anterior.
+La PACF tiene en el primer rezago un valor muy cercano a 1, por lo que el valor de un mes está muy condicionado por el nivel del mes anterior.
 
-En el ACF y PACF no hay picos aislados en los rezagos múltiplos de 12. Por lo que, de forma descriptiva, no parece quehaber una estacionalidad anual fuerte evidente en los datos crudos.
+En el ACF y PACF no hay picos aislados en los rezagos múltiplos de 12. Por lo que, de forma descriptiva, no parece haber una estacionalidad anual fuerte evidente en los datos crudos.
 
 ### Transformación
 
 En primer lugar, es necesario verificar si es necesario aplicar algún tipo de transformación a la varianza.
 
 ```{r}
-transformacion <- trans(z = serie)
-transformacion
+transformacion <- bc_trans(z = serie)
+```
+
+```{r, fig.width=6, fig.height=6}
+transformacion$grafico
 ```
 
 La estimación de $\lambda$ y su respectivo intervalo de confianza son respectivamente:
 
 ```{r, fig.width=6, fig.height=7}
-transformacion$lambda_estimado
-transformacion$intervalo_confianza
-transformacion$grafico
+transformacion$lambda
+transformacion$G0
+transformacion$ic
 ```
 
-Con $\hat{\lambda}=0.08$ y un intervalo de confianza al 95% de $(-0.05, 0.21)$, se tiene que el $0$ está incluido, por lo que es necesario aplicar una transformación y la más adecuada según Box-Cox es una logaritmica.
+Con $\hat{\lambda}=0.1$ y un intervalo de confianza al 95% de $(-0.03, 0.23)$, se tiene que el $0$ está incluido, por lo que es necesario aplicar una transformación y la más adecuada según Box-Cox es una logaritmica. Esta idea se refuerza con $G_0$, el cual presento un valor de $2.37 \leq \chi^2_{0.95,1}= 3.841$, por lo que no se rechaza la hipótesis nula $H_0:\lambda=0$ frente a $H_1:\lambda \ne 0$, y se concluye de igual forma acerca de la transformación logaritmica.
 
 Se aplica logaritmo a la serie:
 
@@ -142,38 +145,108 @@ serie <- log(serie)
 
 ### Diferenciación
 
-Se plantea la prueba de Dickey-Fuller aumentada:
+Para determinar el número de diferencias ordinarias y estacionales ($d$ y $D$), se dibujan las 4 ACFs de $\log(Z_t)$, $\nabla\log(Z_t)$ $\nabla_s\log(Z_t)$ y $\nabla\nabla_s\log{Z_t}$, donde $Z_t$ representa la serie original:
 
-$$
-H_0: \gamma=0 \text{ (Hay raíz unitaria) vs. } H_1: \gamma>0 \text{ (No hay raíz unitaria)}
-$$
-
-Se hace la prueba de hipótesis primero con $d=0$, si se concluye que hay raíz unitaria, se procede a hacerlo con $d=1$, y luego con $d=2$. Se pone el límite en 2, pues en la práctica estos valores son los más comunes.
-
-Cuando$d = 0$ y `probar_tendencia = TRUE` se estima el modelo completo con intercepto y tendencia determinista (`type = "trend"`, estadístico $\tau_3$). Se evalúa la significancia individual de la tendencia (`tt`) verificando si $\vert{}t\vert{} < 2$. Si la tendencia no es significativa, se descarta y se vuelve a hacer la prueba solo con intercepto (`type = "drift"`, estadístico $\tau_2$) para no perder potencia estadística.
-
-Cuando $d \ge 1$ (serie ya diferenciada) se estima el modelo con intercepto (`type = "drift"`, estadístico $\tau_2$), ya que diferenciar una serie con tendencia lineal deja una constante distinta de cero.. Luego, se verifica si ese intercepto es significativo ($\vert{}t\vert{} \ge 2$). Si no lo es ($\vert{}t\vert{} < 2$), reduce el modelo al caso sin intercepto ni tendencia (`type = "none"`, estadístico $\tau_1$).
-
-```{r, fig.width=6, fig.height=7}
-dife_bc(serie)
+```{r}
+diferenciaciones <- bc_dif(z = serie)
 ```
 
-Cuando $d=0$, se tiene que $|t=2.78|>2$, por lo que sí hay tendencia deterministica significativa. Por esto, se mantiene el modelo completo con intercepto y tendencia lineal (`type = "trend"`, estadístico $\tau_3$). Además, como $\tau_3=-3.34>-3.43$, se procede a no rechazar la hipótesis nula, por lo que existe una raíz unitaria y se sigue con $d=1$:
+```{r, fig.width=6, fig.height=7}
+diferenciaciones$grafico
+```
 
-Al diferenciar la serie una vez, se evaluó primero el modelo con deriva (`drift`), pero como el $t$ del intercepto resultó no significativo, se redujo la ecuación al modelo sin intercepto ni tendencia (`type = "none"`, estadístico $\tau_1$). Esto indica que la serie diferenciada oscila alrededor de cero. $\tau_1=-5.06<-1.95$, por lo que se rechaza la hipótesis nula, y se concluye que no hay raíz unitaria y que la serie es estacionaria con una diferencia $d=1$.
+En la serie original ($Z$) se muestra un decaimiento lento desde $r_1 \approx 0,94$ a lo largo de los primeros rezagos, señal clara de no estacionariedad en el reloj regular ($d \ge 1$). Luego de aplicar una diferencia ordinaria ($\nabla Z$) la ACF cae inmediatamente y se corta en los primeros rezagos (solo sobresale ligeramente $r_1 \approx 0,28$). En el reloj estacional (barras rojas en $12, 24, 36$), no hay decaimiento lento ni persistencia: $r_{12} \approx -0,20$ y $r_{24} \approx -0,24$ rozan apenas la banda de significancia y $r_{36} \approx 0$. No hay evidencia de raíz unitaria estacional que exija $D = 1$. Con solo la diferencia estacional ($\nabla_s Z$) sigue habiendo un decaimiento lento desde $r_1 \approx 0,90$, confirmando que falta la diferencia regular $d = 1$. Por último, con la diferencia ordinaria y estacional **(**$\nabla\nabla_s Z$) se ve una autocorrelación negativa alrededor del rezago $12$ ($r_{11} \approx -0,37$, $r_{12} \approx -0,28$ y varios rezagos negativos entre $10$ y $24$) y mantiene decaimiento en $1, 2, 3$. Esto es típico de aplicar una diferencia estacional $\nabla_{12}$ de más cuando el componente estacional es estacionario o determinístico.
+
+En conclusión, es suficiente con una diferencia ordinaria **(**$d = 1, D = 0$):
 
 ```{r}
 serie <- diff(serie, differences = 1)
 ```
 
-ˆ𝜏3 =−3.99 \<5.92
+Si se usan las funciones `nsdiffs` y `ndiffs` se obtienen las mismas conclusiones:
 
 ```{r}
-bc_perfil(serie)
+diferenciaciones$d_sugerido
+diferenciaciones$D_sugerido
 ```
 
-```{r, fig.width=6, fig.height=7}
-bc_dif(serie)
+### Órdenes
+
+Primero se mira la ACF (con banda de Bartlett) y PACF de la serie ya transformada y diferenciada para detectar posibles candidatos:
+
+```{r}
+graficas_dif(serie = serie, titulo = "Gráficos de la serie transformada y diferenciada")
+```
+
+La PACF se corta en el primer rezago, esto sumado al decaimiento sinusoidal de la ACF, propone un AR(1) $(1,1,0)$. Como tanto la ACF y la PACF se cortan en el primer rezago se proponen los siguientes candidatos parsimoniosos en la parte regultar: $(1,1,1)$ y $(0,1,1)$, sumados al anterior dicho.
+
+En cuanto a la parte estacional, en la ACF se nota que el rezago 12 es significativo, en los demás rezagos múltiplos de 12 pasa lo contrario, por lo que es posible proponer $(0,0,1)_{\nabla_{12}}$. De forma similar pasa en la PACF, por lo que otra propuesta es $(1,0,0)_{\nabla_{12}}$. Tanto en la ACF como en la PACF se nota un decaimiento a partir del rezago 12, por lo que otro candidato es $(1,0,1)_{\nabla_{12}}$. Se resalta que la señal de estacionalidad se ve principalmente en la PACF.
+
+De esta manera los candidatos son:
+
+- $\text{SARIMA}(0,1,1)(0,0,1)_{12}$.
+
+- $\text{SARIMA}(0,1,1)(1,0,0)_{12}$.
+
+- $\text{SARIMA}(0,1,1)(1,0,1)_{12}$.
+
+- $\text{SARIMA}(1,1,0)(0,0,1)_{12}$.
+
+- $\text{SARIMA}(1,1,0)(1,0,0)_{12}$.
+
+- $\text{SARIMA}(1,1,0)(1,0,1)_{12}$.
+
+- $\text{SARIMA}(1,1,1)(0,0,1)_{12}$.
+
+- $\text{SARIMA}(1,1,1)(1,0,0)_{12}$.
+
+- $\text{SARIMA}(1,1,1)(1,0,1)_{12}$.
+
+### Constante
+
+```{r}
+constante(serie)
+```
+
+### Comparación entre candidatos
+
+Como ya se vió en el paso anterior, para esta serie de tiempo no se debe incluir la constante o intercepto. Esta decisión se trae hasta los criterios de información en `incluir_constante = FALSE`.
+
+```{r}
+candidatos <- list(c(0,1,0,1), c(0,1,1,0), c(0,1,1,1), c(1,0,0,1), c(1,0,1,0),
+                   c(1,0,1,1), c(1,1,0,1), c(1,1,1,0), c(1,1,1,1))
+comparar_candidatos(w = serie, candidatos = candidatos, incluir_constante = FALSE)
+
+```
+
+De acuerdo a la tabla comparativa entre los modelos planteados, los dos modelos con valores más bajos en los criterios fueron $\text{SARIMA}(1,1,0)(1,0,1)_{12}$ y $\text{SARIMA}(1,1,1)(1,0,1)_{12}$, donde el primero supera por diferencias de aproximadamente 2 en AIC y BIC, sin embargo, en el SBC está por arriba por alrededor de 5 puntos, este es el mayor indicador para elegir como modelo ganador a $\text{SARIMA}(1,1,0)(1,0,1)_{12}$.
+
+```{r}
+supuestos <- validar_sarima(z=serie, orden = c(1,1,0), estacional = c(1,0,1), incluir_constante = FALSE)
+```
+
+```{r}
+supuestos$ljung_box
+```
+
+```{r}
+supuestos$graf_acf
+```
+
+```{r}
+supuestos$coeficientes
+```
+
+```{r}
+supuestos$normalidad
+```
+
+```{r}
+supuestos$graf_qq
+```
+
+```{r}
+supuestos$sobreajuste
 ```
 
 ## Referencias bibliográficas
