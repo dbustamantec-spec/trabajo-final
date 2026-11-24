@@ -92,6 +92,203 @@ La revisión de la literatura evidencia que en ninguno de los casos se usa un pr
 
 Este trabajo se enfoca sobre estos vacíos. Para ello, se evalúa la capacidad predictiva de un modelo SARIMA sobre la serie mensual de casos confirmados de dengue en Colombia a un horizonte de seis meses, contrastándolo contra un referente ingenuo, medias estacionales y suavizamiento exponencial. Se consideran origen móvil, MASE y RMSE, cobertura empírica de los intervalos al 95% y prueba de Diebold-Mariano con corrección de horizonte, estratificando el análisis entre periodos de brote y endémicos.
 
+## Marco Teórico: Pronóstico Univariado de Casos Confirmados de Dengue en Colombia mediante Modelos SARIMA
+
+### 1. Contexto Metodológico y Criterios de Suficiencia
+
+El presente Marco Teórico constituye el compromiso formal de fundamentación estadística del trabajo de investigación sobre la modelación y pronóstico de la incidencia mensual de dengue en Colombia para el periodo 2015–2025 ($T = 132$ observaciones). El propósito sustantivo de este desarrollo es proveer a la Dirección de Epidemiología y Demografía del Ministerio de Salud y Protección Social de herramientas cuantitativas rigurosas para anticipar con un horizonte de $h = 6$ meses la asignación de recursos médicos, contratación de personal y distribución de insumos en contingencias sanitarias.
+
+En estricto cumplimiento de los lineamientos institucionales exigidos en el curso de Series de Tiempo, esta sección se rige por un **criterio de doble suficiencia**:
+
+1.  **Completitud:** Todo objeto estocástico, operador algebraico, transformación funcional ($\lambda$ de Box-Cox), estructura de modelo ($\text{SARIMA}$, $\text{ETS}$, $\text{Naïve}$, Medias Estacionales), parámetro y métrica de validación ($\text{RMSE}$, $\text{MASE}$, prueba de Diebold-Mariano) empleado en la solución del problema y en la fase de validación se encuentra matemáticamente definido en esta sección.
+2.  **Economía:** Cada elemento teórico conceptualizado en este capítulo es efectivamente operacionalizado y evaluado en las secciones posteriores del documento técnico. Se eliminan sin excepción definiciones accesorias o históricas que no tengan un uso analítico directo.
+
+De acuerdo con las directrices metodológicas, este marco teórico evita la recitación de conceptos elementales de libros de texto y prescinde de demostraciones algebraicas extensas. En su lugar, se enuncian los teoremas y resultados fundamentales acompañados de sus **supuestos explícitos** y con su **localización bibliográfica exacta** (capítulo, sección o teorema), garantizando la máxima verificabilidad por parte del lector técnico. Todas las referencias bibliográficas seleccionadas provienen de literatura científica de **acceso público y gratuito** (Open Access, repositorios institucionales y textos abiertos).
+
+------------------------------------------------------------------------
+
+### 2. Tabla de Notación Formal
+
+Para garantizar la consistencia matemática a lo largo del documento, la Tabla 1 consolida el conjunto completo de símbolos, operadores, subíndices e indicadores estadísticos empleados en el trabajo.
+
+#### Tabla 1: Notación matemática formal y su localización de introducción en el documento
+
+| Símbolo | Significado Matemático | Sección de Introducción |
+|:-----------------------|:-----------------------|:-----------------------|
+| $Y_t$ | Serie temporal observada de casos confirmados mensuales de dengue en Colombia en el mes $t$ | Sección 3.1 |
+| $\lambda$ | Parámetro de forma de la transformación de estabilización de varianza de Box-Cox | Sección 3.4 |
+| $Y_t^{(\lambda)}$ | Serie transformada mediante la función de Box-Cox | Sección 3.4 |
+| $B$ | Operador de rezago o retardo ($B^k Y_t = Y_{t-k}$) | Sección 3.3 |
+| $\nabla, \nabla_s$ | Operador de diferencia regular $\nabla = (1-B)$ y estacional $\nabla_s = (1-B^s)$ | Sección 3.3 |
+| $s$ | Periodo o frecuencia de estacionalidad ($s = 12$ meses para datos mensuales) | Sección 3.3 |
+| $w_t$ | Serie estacionaria obtenida tras aplicar diferenciación regular $d$ y estacional $D$ | Sección 3.5 |
+| $p, d, q$ | Órdenes autoregresivo, de integración y de medias móviles regulares | Sección 3.5 |
+| $P, D, Q$ | Órdenes autoregresivo, de integración y de medias móviles estacionales | Sección 3.5 |
+| $\phi(B), \theta(B)$ | Polinomios autoregresivo $\text{AR}(p)$ y de medias móviles $\text{MA}(q)$ regulares | Sección 3.5 |
+| $\Phi(B^s), \Theta(B^s)$ | Polinomios autoregresivo $\text{SAR}(P)$ y de medias móviles $\text{SMA}(Q)$ estacionales | Sección 3.5 |
+| $\epsilon_t$ | Proceso de ruido blanco gaussiano con media 0 y varianza constante $\sigma^2_\epsilon$ | Sección 3.1 |
+| $\gamma(h), \rho(h)$ | Función de autocovarianza ($\text{ACVF}$) y de autocorrelación ($\text{ACF}$) en el rezago $h$ | Sección 3.2 |
+| $\alpha(h)$ | Función de autocorrelación parcial ($\text{PACF}$) en el rezago $h$ | Sección 3.2 |
+| $h$ | Horizonte de pronóstico en meses ($h = 1, 2, \dots, 6$) | Sección 4.2 |
+| $T$ | Tamaño total de la serie observada ($T = 132$ meses, enero 2015 – diciembre 2025) | Sección 3.1 |
+| $T_{train}$ | Tamaño del conjunto de entrenamiento en la ventana inicial de origen móvil | Sección 5.1 |
+| $i$ | Subíndice que representa la iteración u origen en el esquema de origen móvil ($i = 1, \dots, K$) | Sección 5.1 |
+| $\hat{Y}_{T+h|T}$ | Pronóstico puntual a $h$ pasos proyectado desde el origen de tiempo $T$ | Sección 4.2 |
+| $e_T(h)$ | Error de pronóstico fuera de muestra a $h$ pasos, definido como $Y_{T+h} - \hat{Y}_{T+h|T}$ | Sección 4.2 |
+| $\text{RMSE}(h)$ | Raíz del error cuadrático medio al horizonte de pronóstico $h$ | Sección 5.2 |
+| $\text{MASE}(h)$ | Error absoluto medio escalado al horizonte de pronóstico $h$ | Sección 5.2 |
+| $q_{naive}$ | Escalador del MASE, calculado strictly sobre la muestra de entrenamiento | Sección 5.2 |
+| $I_{1-\alpha}(h)$ | Intervalo de predicción al nivel de confianza $1-\alpha$ ($80\%$ y $95\%$) para el horizonte $h$ | Sección 4.3 |
+| $S_{DM}(h)$ | Estadístico de prueba de Diebold-Mariano corregido por el horizonte $h$ | Sección 5.4 |
+
+------------------------------------------------------------------------
+
+### 3. Fundamentación de Objetos y Procesos Estocásticos
+
+#### 3.1. Proceso Estocástico y Estacionariedad Débil
+
+Definimos la serie mensual de casos de dengue como una realización finita $\{y_t\}_{t=1}^T$ de un proceso estocástico $\{Y_t, t \in \mathbb{Z}\}$, conceptualizado como una colección infinita de variables aleatorias ordenadas temporalmente en un espacio de probabilidad filtrado $(\Omega, \mathcal{F}, \{\mathcal{F}_t\}, \mathbb{P})$.
+
+> **Definición 3.1 (Estacionariedad Débil o en Sentido Amplio).**\
+> Un proceso estocástico $\{Y_t\}$ se define como débilmente estacionario si cumple conjuntamente tres condiciones (Shumway & Stoffer, 2017, Sección 1.3): 1. La esperanza matemática es finita y constante a lo largo del tiempo: $\mathbb{E}[Y_t] = \mu < \infty, \quad \forall t \in \mathbb{Z}$. 2. La varianza es finita y no depende del tiempo: $\operatorname{Var}(Y_t) = \mathbb{E}[(Y_t - \mu)^2] = \sigma^2 < \infty, \quad \forall t \in \mathbb{Z}$. 3. La autocovarianza entre dos momentos del tiempo $t$ y $t+h$ depende exclusivamente del rezago o separación temporal $h$, y no del tiempo absoluto $t$: $$\operatorname{Cov}(Y_t, Y_{t+h}) = \mathbb{E}[(Y_t - \mu)(Y_{t+h} - \mu)] = \gamma(h), \quad \forall t, h \in \mathbb{Z}$$
+
+*Supuestos explícitos:* Se asume que el proceso posee momentos de segundo orden finitos ($\mathbb{E}[Y_t^2] < \infty$). La presencia de tendencias estacionales y epidemiológicas en el dengue invalida la estacionariedad débil directa en niveles, lo que justifica la aplicación de transformaciones funcionales y operadores de diferencia.
+
+------------------------------------------------------------------------
+
+#### 3.2. Funciones de Autocovarianza y Autocorrelación (ACVF, ACF, PACF)
+
+La dependencia estocástica temporal del proceso se caracteriza formalmente mediante la estructura de autocovarianza y autocorrelación.
+
+> **Definición 3.2 (ACVF y ACF).**\
+> La Función de Autocovarianza ($\text{ACVF}$) $\gamma(h)$ y la Función de Autocorrelación ($\text{ACF}$) $\rho(h)$ para un proceso débilmente estacionario en el rezago $h \in \mathbb{Z}$ se expresan como (Shumway & Stoffer, 2017, Sección 1.4): $$\gamma(h) = \operatorname{Cov}(Y_t, Y_{t+h}), \quad \rho(h) = \frac{\gamma(h)}{\gamma(0)} = \frac{\operatorname{Cov}(Y_t, Y_{t+h})}{\operatorname{Var}(Y_t)}$$ con propiedades estructurales $\rho(0) = 1$, $|\rho(h)| \le 1$ y simetría $\rho(h) = \rho(-h)$.
+
+> **Definición 3.3 (PACF).**\
+> La Función de Autocorrelación Parcial ($\text{PACF}$) $\alpha(h)$ mide la correlación lineal entre $Y_t$ y $Y_{t+h}$ tras eliminar la influencia lineal de las variables intermedias $\{Y_{t+1}, Y_{t+2}, \dots, Y_{t+h-1}\}$. Formalmente se define como el coeficiente $\phi_{hh}$ en la regresión autoregresiva de orden $h$ (Shumway & Stoffer, 2017, Sección 3.2): $$\alpha(h) = \phi_{hh}, \quad \text{donde } Y_t = \sum_{j=1}^h \phi_{hj} Y_{t-j} + e_t$$
+
+*Uso metodológico en la solución:* La ACF y la PACF estimadas sobre la serie estacionaria permiten identificar preliminarmente los órdenes de los polinomios autoregresivos y de medias móviles ($p, q, P, Q$) en la fase de identificación de Box-Jenkins.
+
+------------------------------------------------------------------------
+
+#### 3.3. Operadores de Rezago y Diferenciación
+
+La manipulación algebraica de componentes temporales se efectúa mediante la álgebra de operadores sobre espacios de secuencias.
+
+> **Definición 3.4 (Operador de Rezago y Diferencia).**\
+> El operador de rezago $B$ desplaza la serie un periodo hacia atrás: $B^k Y_t = Y_{t-k}$ para $k \in \mathbb{N}_0$. Se definen los operadores de diferencia regular $\nabla$ y estacional $\nabla_s$ de periodo $s = 12$ como (Hyndman & Khandakar, 2008, Sección 3; Hyndman & Athanasopoulos, 2021, Capítulo 9.1): $$\nabla Y_t = (1 - B) Y_t = Y_t - Y_{t-1}$$ $$\nabla_s^D \nabla^d Y_t = (1 - B^s)^D (1 - B)^d Y_t$$
+
+------------------------------------------------------------------------
+
+#### 3.4. Transformación de Estabilización de Varianza de Box-Cox
+
+Las series epidemiológicas presentan frecuentemente heterocedasticidad condicionada por el nivel de la serie (mayor varianza en periodos epidémicos de alta incidencia). Para estabilizar la varianza del error y aproximar la normalidad, se aplica la familia de transformaciones paramétricas de Box-Cox.
+
+> **Definición 3.5 (Transformación de Box-Cox).**\
+> Dada la serie de casos observados $Y_t > 0$, la transformación funcional $Y_t^{(\lambda)}$ está parametrizada por $\lambda \in \mathbb{R}$ según (Vélez et al., 2015; Hyndman & Athanasopoulos, 2021, Capítulo 3.1): $$Y_t^{(\lambda)} = \begin{cases} \frac{Y_t^\lambda - 1}{\lambda}, & \text{si } \lambda \neq 0 \\ \ln(Y_t), & \text{si } \lambda = 0 \end{cases}$$
+
+*Supuesto explícito y restricción metodológica:* La estimación del parámetro óptimo $\lambda$ (por ejemplo, vía máxima verosimilitud de Guerrero) se realiza **estrictamente sobre la muestra de entrenamiento** $T_{train}$ para prevenir la contaminación por información del futuro (data leakage) en la fase de pronóstico.
+
+------------------------------------------------------------------------
+
+#### 3.5. Estructura Formal del Modelo SARIMA
+
+El modelo primario objeto de evaluación en este trabajo es el proceso Autoregresivo Integrado de Medias Móviles Estacional ($\text{SARIMA}$), formulado por Box y Jenkins para capturar dinámicas estocásticas con patrones periódicos.
+
+> **Definición 3.6 (Modelo** $\text{SARIMA}(p,d,q)\times(P,D,Q)_s$).\
+> Sea $Y_t$ la serie observada y $Y_t^{(\lambda)}$ su transformación de Box-Cox. Decimos que $\{Y_t^{(\lambda)}\}$ sigue un modelo $\text{SARIMA}(p,d,q)\times(P,D,Q)_s$ con periodo estacional $s = 12$ si la serie diferenciada $w_t = (1-B)^d (1-B^s)^D Y_t^{(\lambda)}$ satisface la ecuación polinomial (Hyndman & Khandakar, 2008, Sección 3.1; Hyndman & Athanasopoulos, 2021, Capítulo 9.9): $$\phi_p(B) \Phi_P(B^s) (1-B)^d (1-B^s)^D Y_t^{(\lambda)} = \theta_q(B) \Theta_Q(B^s) \epsilon_t$$ donde los operadores polinomiales se definen como: 1. Polinomio autoregresivo regular: $\phi_p(B) = 1 - \phi_1 B - \phi_2 B^2 - \dots - \phi_p B^p$ 2. Polinomio autoregresivo estacional: $\Phi_P(B^s) = 1 - \Phi_1 B^s - \Phi_2 B^{2s} - \dots - \Phi_P B^{Ps}$ 3. Polinomio de medias móviles regular: $\theta_q(B) = 1 + \theta_1 B + \theta_2 B^2 + \dots + \theta_q B^q$ 4. Polinomio de medias móviles estacional: $\Theta_Q(B^s) = 1 + \Theta_1 B^s + \Theta_2 B^{2s} + \dots + \Theta_Q B^{Qs}$ y $\{\epsilon_t\} \sim \text{iid } \mathcal{N}(0, \sigma^2_\epsilon)$ representa un proceso de ruido blanco gaussiano.
+
+------------------------------------------------------------------------
+
+#### 3.6. Modelos de Referencia (Benchmarks)
+
+Para determinar si la complejidad matemática del modelo SARIMA se traduce en una ventaja predictiva real para el usuario institucional, se contrastará frente a tres referentes de diferente nivel de sofisticación (Hyndman & Athanasopoulos, 2021, Capítulos 5.2 y 8.1):
+
+1.  **Referente Ingenuo (Naïve Benchmark):** Proyecta como pronóstico puntual para cualquier horizonte $h$ el último valor observado en el origen de predicción: $$\hat{Y}_{T+h|T}^{\text{Naïve}} = Y_T, \quad \forall h \ge 1$$
+2.  **Medias Estacionales / Naïve Estacional (Seasonal Naïve Benchmark):** Proyecta el valor observado en el mismo mes del periodo anual anterior ($s = 12$): $$\hat{Y}_{T+h|T}^{\text{SNaïve}} = Y_{T+h - m s}, \quad \text{donde } m = \lfloor(h-1)/s\rfloor + 1$$
+3.  **Suavizamiento Exponencial Holt-Winters / ETS (Error, Trend, Seasonal):** Modelo de espacio de estados que descompone la serie en componentes de nivel ($l_t$), tendencia ($b_t$) y estacionalidad ($s_t$). Para una estructura aditiva $\text{ETS}(A,A,A)$, la ecuación de pronóstico a $h$ pasos es: $$\hat{Y}_{T+h|T}^{\text{ETS}} = l_T + h b_T + s_{T+h - m s}$$
+
+------------------------------------------------------------------------
+
+### 4. Resultados Teóricos, Teoremas y Pronóstico Óptimo
+
+#### 4.1. Condiciones de Causalidad e Invertibilidad
+
+La validez matemática del modelo SARIMA para la generación de pronósticos estables requiere garantizar que el proceso admita una representación autoregresiva de orden infinito $\text{AR}(\infty)$ y de medias móviles de orden infinito $\text{MA}(\infty)$.
+
+> **Teorema 4.1 (Condición de Causalidad).**\
+> El proceso $\text{SARIMA}(p,d,q)\times(P,D,Q)_s$ proyectado sobre la serie diferenciada $w_t$ es **causal** (depende únicamente del pasado del ruido blanco $\{\epsilon_s, s \le t\}$) si y solo si los ceros de los polinomios autoregresivos regular $\phi_p(z)$ y estacional $\Phi_P(z^s)$ se encuentran estrictamente fuera del círculo unitario en el plano complejo (Shumway & Stoffer, 2017, Teorema 3.1): $$\phi_p(z) \neq 0 \quad \text{y} \quad \Phi_P(z^s) \neq 0 \quad \forall z \in \mathbb{C} \text{ tal que } |z| \le 1$$ Bajo esta condición, existe una representación $\text{MA}(\infty)$ dada por $w_t = \sum_{j=0}^{\infty} \psi_j \epsilon_{t-j}$, donde $\sum_{j=0}^{\infty} |\psi_j| < \infty$.
+
+> **Teorema 4.2 (Condición de Invertibilidad).**\
+> El proceso es **invertible** (el ruido blanco $\epsilon_t$ puede expresarse como combinación lineal convergente del pasado del proceso $\{w_s, s \le t\}$) si y solo si los ceros de los polinomios de medias móviles regular $\theta_q(z)$ y estacional $\Theta_Q(z^s)$ se encuentran estrictamente fuera del círculo unitario en el plano complejo (Shumway & Stoffer, 2017, Teorema 3.2): $$\theta_q(z) \neq 0 \quad \text{y} \quad \Theta_Q(z^s) \neq 0 \quad \forall z \in \mathbb{C} \text{ tal que } |z| \le 1$$ Bajo esta condición, existe una representación $\text{AR}(\infty)$ dada por $\epsilon_t = \sum_{j=0}^{\infty} \pi_j w_{t-j}$, donde $\sum_{j=0}^{\infty} |\pi_j| < \infty$.
+
+*Supuestos explícitos:* Los polinomios $\phi_p(z)$ y $\theta_q(z)$ no comparten raíces comunes (ausencia de cancelación de factores).
+
+------------------------------------------------------------------------
+
+#### 4.2. Formulación del Predictor Óptimo Lineal y Varianza del Error
+
+> **Teorema 4.3 (Predictor Óptimo de Mínimo Error Cuadrático Medio).**\
+> Sea el conjunto de información disponible hasta el momento $T$ denotado por la $\sigma$-álgebra $\mathcal{F}_T = \sigma(Y_1, Y_2, \dots, Y_T)$. El predictor puntual $\hat{Y}_{T+h|T}$ que minimiza el error cuadrático medio de predicción $\mathbb{E}[(Y_{T+h} - g(\mathcal{F}_T))^2]$ es la esperanza condicional (Shumway & Stoffer, 2017, Sección 3.4 y Teorema 3.3): $$\hat{Y}_{T+h|T} = \mathbb{E}[Y_{T+h} \mid \mathcal{F}_T]$$ Expresando el proceso en su representación de medias móviles $Y_{T+h} = \sum_{j=0}^{\infty} \psi_j \epsilon_{T+h-j}$ con $\psi_0 = 1$, el error de pronóstico a $h$ pasos $e_T(h)$ es: $$e_T(h) = Y_{T+h} - \hat{Y}_{T+h|T} = \sum_{j=0}^{h-1} \psi_j \epsilon_{T+h-j}$$ La media del error de pronóstico es nula ($\mathbb{E}[e_T(h)] = 0$) y su varianza teórica a $h$ pasos está dada por (Shumway & Stoffer, 2017, Sección 3.4): $$\sigma^2(h) = \operatorname{Var}(e_T(h)) = \sigma^2_\epsilon \sum_{j=0}^{h-1} \psi_j^2$$
+
+*Propiedad fundamental:* La varianza del error de pronóstico $\sigma^2(h)$ es una función no decreciente del horizonte $h$.
+
+------------------------------------------------------------------------
+
+#### 4.3. Intervalos de Predicción e Incertidumbre
+
+> **Definición 4.1 (Intervalos de Predicción Gaussianos).**\
+> Bajo el supuesto de que el proceso de ruido blanco es independiente e idénticamente distribuido normal $\{\epsilon_t\} \sim \text{iid } \mathcal{N}(0, \sigma^2_\epsilon)$, el error de pronóstico $e_T(h)$ sigue una distribución gaussiana. El intervalo de predicción simétrico de nivel $(1-\alpha) \times 100\%$ para $Y_{T+h}$ se construye como (Hyndman & Athanasopoulos, 2021, Capítulo 5.5): $$I_{1-\alpha}(h) = \left[ \hat{Y}_{T+h|T} - z_{1-\alpha/2} \sqrt{\sigma^2(h)}, \quad \hat{Y}_{T+h|T} + z_{1-\alpha/2} \sqrt{\sigma^2(h)} \right]$$ donde $z_{1-\alpha/2}$ representa el cuantil $(1-\alpha/2)$ de la distribución normal estándar $\mathcal{N}(0,1)$.
+
+*Limitación teórica:* En la práctica, este intervalo gaussiano ignora la incertidumbre en la estimación de los parámetros del modelo y supone colas normales. Por ello, se contrasta empíricamente con intervalos construidos mediante **bootstrap de residuos** (Hyndman & Athanasopoulos, 2021, Capítulo 5.5).
+
+------------------------------------------------------------------------
+
+### 5. Herramientas Metodológicas de Evaluación y Validación Fuera de Muestra
+
+#### 5.1. Esquema de Validación por Origen Móvil (Rolling-Origin Cross-Validation)
+
+Para evaluar la capacidad predictiva de los modelos en condiciones operativas reales y evitar el sobreajuste en muestra, se implementa una estructura de **validación por origen móvil** (tiempo de evaluación fuera de muestra con ventana creciente) (Hyndman & Athanasopoulos, 2021, Capítulo 5.8).
+
+Sea $T_{train}$ la longitud de la ventana inicial de entrenamiento. En cada iteración $i = 1, 2, \dots, K$ (donde $K$ es el número total de cortes o resubmuestras de validación, con $K \ge 25$ según los requerimientos del curso): 1. El modelo se reestima utilizando únicamente los datos observados hasta el origen $T_i = T_{train} + i - 1$. 2. Se generan pronósticos puntuales e intervalos a los horizontes $h = 1, 2, \dots, 6$ meses: $\hat{Y}_{T_i+h | T_i}$. 3. Se registra la serie de errores fuera de muestra: $e_{T_i}(h) = Y_{T_i+h} - \hat{Y}_{T_i+h | T_i}$.
+
+------------------------------------------------------------------------
+
+#### 5.2. Métricas Fuera de Muestra: RMSE y MASE
+
+Las métricas de precisión fuera de muestra sintetizan la magnitud de los errores observados a través de los $K$ orígenes móviles para cada horizonte $h$.
+
+> **Definición 5.1 (Raíz del Error Cuadrático Medio - RMSE).**\
+> Para un horizonte fijo $h$, el $\text{RMSE}(h)$ penaliza de forma cuadrática las grandes desviaciones (Hyndman & Koehler, 2006, Sección 3.1): $$\text{RMSE}(h) = \sqrt{ \frac{1}{K} \sum_{i=1}^K \left( e_{T_i}(h) \right)^2 }$$
+
+> **Definición 5.2 (Error Absoluto Medio Escalado - MASE).**\
+> El $\text{MASE}(h)$ es una métrica de precisión invariante a la escala de la variable, propuesta por Hyndman y Koehler (2006), que compara el error absoluto medio del modelo candidato contra el error absoluto medio en muestra de un pronóstico ingenuo estacional ($s = 12$): $$\text{MASE}(h) = \frac{\frac{1}{K} \sum_{i=1}^K |e_{T_i}(h)|}{q_{naive}}$$ donde el escalador $q_{naive}$ se define explícita y formalmente como (Hyndman & Koehler, 2006, Sección 3.2): $$q_{naive} = \frac{1}{T_{train} - s} \sum_{t=s+1}^{T_{train}} |Y_t - Y_{t-s}|$$
+
+*Regla conceptual fundamental:* **El escalador** $q_{naive}$ debe calcularse de manera estricta y exclusiva sobre los datos de la muestra de entrenamiento inicial $T_{train}$. Calcular el escalador sobre la serie completa $T$ constituiría una violación metodológica grave al incorporar información futura en la escala de medición. Un $\text{MASE}(h) < 1$ indica que el modelo evaluado supera al referente ingenuo estacional fuera de muestra en el horizonte $h$.
+
+------------------------------------------------------------------------
+
+#### 5.3. Cobertura Empírica de Intervalos de Predicción
+
+Para corroborar si la incertidumbre declarada por los modelos es numéricamente fidedigna, se evalúa la cobertura empírica de los intervalos de predicción construidos al $80\%$ y $95\%$ nominales.
+
+> **Definición 5.3 (Cobertura Empírica).**\
+> La cobertura empírica $\hat{C}_{1-\alpha}(h)$ para un horizonte $h$ y un nivel de confianza nominal $(1-\alpha)$ es la proporción real de observaciones fuera de muestra que caen dentro de los límites del intervalo proyectado (Hyndman & Athanasopoulos, 2021, Capítulo 5.5): $$\hat{C}_{1-\alpha}(h) = \frac{1}{K} \sum_{i=1}^K \mathbb{I}\left( Y_{T_i+h} \in I_{1-\alpha, T_i}(h) \right)$$ donde $\mathbb{I}(\cdot)$ es la función indicadora.
+
+*Criterio de interpretación:* Con $K \approx 25$ orígenes, existe un error de muestreo apreciable ($\approx \pm 0.09$ para una proporción nominal de $0.95$). Por tanto, desviaciones pequeñas (e.g., cobertura empírica del $91\%$ frente a un nominal del $95\%$) están dentro del rango aleatorio esperable, mientras que diferencias pronunciadas (e.g., cobertura del $65\%$) evidencian fallas en el supuesto de normalidad o subestimación de la variabilidad.
+
+------------------------------------------------------------------------
+
+#### 5.4. Prueba de Comparación de Precisión de Diebold y Mariano
+
+Para establecer si la superioridad observada en las métricas puntuales (MASE o RMSE) entre el modelo SARIMA y los referentes es estadísticamente significativa o si puede ser atribuida al ruido muestral, se aplica la prueba formal de Diebold y Mariano (1995).
+
+> **Definición 5.4 (Estadístico de Diebold-Mariano).**\
+> Sean $\{e_{1, i}(h)\}_{i=1}^K$ y $\{e_{2, i}(h)\}_{i=1}^K$ las secuencias de errores de pronóstico a $h$ pasos de dos modelos competidores (e.g., SARIMA vs. Naïve Estacional) obtenidos en los $K$ orígenes de validación. Se define la serie de diferencias de pérdida $d_i(h)$ mediante una función de pérdida $L(\cdot)$ (típicamente cuadrática $L(e) = e^2$ o absoluta $L(e) = |e|$): $$d_i(h) = L(e_{1, i}(h)) - L(e_{2, i}(h))$$ Se plantea el contraste de hipótesis formal (Diebold & Mariano, 1995, Sección 1.1): $$H_0: \mathbb{E}[d_i(h)] = 0 \quad \text{(Igualdad de precisión predictiva esperada)}$$ $$H_1: \mathbb{E}[d_i(h)] < 0 \quad \text{(El Modelo 1 es significativamente más preciso que el Modelo 2)}$$ El estadístico de prueba $S_{DM}(h)$ se define como (Diebold & Mariano, 1995, Sección 1.2): $$S_{DM}(h) = \frac{\bar{d}(h)}{\sqrt{ \frac{\hat{V}(h)}{K} }} \ \xrightarrow{d} \ \mathcal{N}(0, 1) \quad \text{bajo } H_0$$ donde $\bar{d}(h) = \frac{1}{K} \sum_{i=1}^K d_i(h)$ y $\hat{V}(h)$ es un estimador consistente de la varianza asintótica de la media de las diferencias de pérdida, que incorpora la autocovarianza hasta el rezago $(h-1)$ para corregir la autocorrelación inducida por horizontes de pronóstico solapados ($h > 1$): $$\hat{V}(h) = \hat{\gamma}_d(0) + 2 \sum_{k=1}^{h-1} \hat{\gamma}_d(k)$$ con $\hat{\gamma}_d(k) = \frac{1}{K} \sum_{i=k+1}^K (d_i(h) - \bar{d}(h))(d_{i-k}(h) - \bar{d}(h))$.
+
+*Advertencia de supuestos y potencia:* La prueba de Diebold-Mariano asume que los modelos comparados no están anidados (condición satisfecha al comparar SARIMA contra Naïve Estacional o ETS). Con un número de orígenes $K \approx 25$, la potencia del contraste es moderada, por lo que un no rechazo de $H_0$ debe interpretarse rigurosamente como la imposibilidad empírica de distinguir el desempeño predictivo frente al ruido muestral, y no como una prueba concluyente de equivalencia teórica.
+
+------------------------------------------------------------------------
+
 ## Solución al problema
 
 ### ¿Qúe dice la serie visualmente?

@@ -2604,6 +2604,14 @@ window.Quarto = {
   <li><a href="#calibración" id="toc-calibración" class="nav-link" data-scroll-target="#calibración">Calibración</a></li>
   <li><a href="#brecha" id="toc-brecha" class="nav-link" data-scroll-target="#brecha">Brecha</a></li>
   </ul></li>
+  <li><a href="#marco-teórico-pronóstico-univariado-de-casos-confirmados-de-dengue-en-colombia-mediante-modelos-sarima" id="toc-marco-teórico-pronóstico-univariado-de-casos-confirmados-de-dengue-en-colombia-mediante-modelos-sarima" class="nav-link" data-scroll-target="#marco-teórico-pronóstico-univariado-de-casos-confirmados-de-dengue-en-colombia-mediante-modelos-sarima">Marco Teórico: Pronóstico Univariado de Casos Confirmados de Dengue en Colombia mediante Modelos SARIMA</a>
+  <ul class="collapse">
+  <li><a href="#contexto-metodológico-y-criterios-de-suficiencia" id="toc-contexto-metodológico-y-criterios-de-suficiencia" class="nav-link" data-scroll-target="#contexto-metodológico-y-criterios-de-suficiencia">1. Contexto Metodológico y Criterios de Suficiencia</a></li>
+  <li><a href="#tabla-de-notación-formal" id="toc-tabla-de-notación-formal" class="nav-link" data-scroll-target="#tabla-de-notación-formal">2. Tabla de Notación Formal</a></li>
+  <li><a href="#fundamentación-de-objetos-y-procesos-estocásticos" id="toc-fundamentación-de-objetos-y-procesos-estocásticos" class="nav-link" data-scroll-target="#fundamentación-de-objetos-y-procesos-estocásticos">3. Fundamentación de Objetos y Procesos Estocásticos</a></li>
+  <li><a href="#resultados-teóricos-teoremas-y-pronóstico-óptimo" id="toc-resultados-teóricos-teoremas-y-pronóstico-óptimo" class="nav-link" data-scroll-target="#resultados-teóricos-teoremas-y-pronóstico-óptimo">4. Resultados Teóricos, Teoremas y Pronóstico Óptimo</a></li>
+  <li><a href="#herramientas-metodológicas-de-evaluación-y-validación-fuera-de-muestra" id="toc-herramientas-metodológicas-de-evaluación-y-validación-fuera-de-muestra" class="nav-link" data-scroll-target="#herramientas-metodológicas-de-evaluación-y-validación-fuera-de-muestra">5. Herramientas Metodológicas de Evaluación y Validación Fuera de Muestra</a></li>
+  </ul></li>
   <li><a href="#solución-al-problema" id="toc-solución-al-problema" class="nav-link" data-scroll-target="#solución-al-problema">Solución al problema</a>
   <ul class="collapse">
   <li><a href="#qúe-dice-la-serie-visualmente" id="toc-qúe-dice-la-serie-visualmente" class="nav-link" data-scroll-target="#qúe-dice-la-serie-visualmente">¿Qúe dice la serie visualmente?</a></li>
@@ -2612,6 +2620,7 @@ window.Quarto = {
   <li><a href="#órdenes" id="toc-órdenes" class="nav-link" data-scroll-target="#órdenes">Órdenes</a></li>
   <li><a href="#constante" id="toc-constante" class="nav-link" data-scroll-target="#constante">Constante</a></li>
   <li><a href="#comparación-entre-candidatos" id="toc-comparación-entre-candidatos" class="nav-link" data-scroll-target="#comparación-entre-candidatos">Comparación entre candidatos</a></li>
+  <li><a href="#diagnósticos" id="toc-diagnósticos" class="nav-link" data-scroll-target="#diagnósticos">Diagnósticos</a></li>
   </ul></li>
   <li><a href="#referencias-bibliográficas" id="toc-referencias-bibliográficas" class="nav-link" data-scroll-target="#referencias-bibliográficas">Referencias bibliográficas</a></li>
   </ul>
@@ -2784,6 +2793,312 @@ window.Quarto = {
 <p>Este trabajo se enfoca sobre estos vacíos. Para ello, se evalúa la capacidad predictiva de un modelo SARIMA sobre la serie mensual de casos confirmados de dengue en Colombia a un horizonte de seis meses, contrastándolo contra un referente ingenuo, medias estacionales y suavizamiento exponencial. Se consideran origen móvil, MASE y RMSE, cobertura empírica de los intervalos al 95% y prueba de Diebold-Mariano con corrección de horizonte, estratificando el análisis entre periodos de brote y endémicos.</p>
 </section>
 </section>
+<section id="marco-teórico-pronóstico-univariado-de-casos-confirmados-de-dengue-en-colombia-mediante-modelos-sarima" class="level2">
+<h2 class="anchored" data-anchor-id="marco-teórico-pronóstico-univariado-de-casos-confirmados-de-dengue-en-colombia-mediante-modelos-sarima">Marco Teórico: Pronóstico Univariado de Casos Confirmados de Dengue en Colombia mediante Modelos SARIMA</h2>
+<section id="contexto-metodológico-y-criterios-de-suficiencia" class="level3">
+<h3 class="anchored" data-anchor-id="contexto-metodológico-y-criterios-de-suficiencia">1. Contexto Metodológico y Criterios de Suficiencia</h3>
+<p>El presente Marco Teórico constituye el compromiso formal de fundamentación estadística del trabajo de investigación sobre la modelación y pronóstico de la incidencia mensual de dengue en Colombia para el periodo 2015–2025 (<span class="math inline">\(T = 132\)</span> observaciones). El propósito sustantivo de este desarrollo es proveer a la Dirección de Epidemiología y Demografía del Ministerio de Salud y Protección Social de herramientas cuantitativas rigurosas para anticipar con un horizonte de <span class="math inline">\(h = 6\)</span> meses la asignación de recursos médicos, contratación de personal y distribución de insumos en contingencias sanitarias.</p>
+<p>En estricto cumplimiento de los lineamientos institucionales exigidos en el curso de Series de Tiempo, esta sección se rige por un <strong>criterio de doble suficiencia</strong>:</p>
+<ol type="1">
+<li><strong>Completitud:</strong> Todo objeto estocástico, operador algebraico, transformación funcional (<span class="math inline">\(\lambda\)</span> de Box-Cox), estructura de modelo (<span class="math inline">\(\text{SARIMA}\)</span>, <span class="math inline">\(\text{ETS}\)</span>, <span class="math inline">\(\text{Naïve}\)</span>, Medias Estacionales), parámetro y métrica de validación (<span class="math inline">\(\text{RMSE}\)</span>, <span class="math inline">\(\text{MASE}\)</span>, prueba de Diebold-Mariano) empleado en la solución del problema y en la fase de validación se encuentra matemáticamente definido en esta sección.</li>
+<li><strong>Economía:</strong> Cada elemento teórico conceptualizado en este capítulo es efectivamente operacionalizado y evaluado en las secciones posteriores del documento técnico. Se eliminan sin excepción definiciones accesorias o históricas que no tengan un uso analítico directo.</li>
+</ol>
+<p>De acuerdo con las directrices metodológicas, este marco teórico evita la recitación de conceptos elementales de libros de texto y prescinde de demostraciones algebraicas extensas. En su lugar, se enuncian los teoremas y resultados fundamentales acompañados de sus <strong>supuestos explícitos</strong> y con su <strong>localización bibliográfica exacta</strong> (capítulo, sección o teorema), garantizando la máxima verificabilidad por parte del lector técnico. Todas las referencias bibliográficas seleccionadas provienen de literatura científica de <strong>acceso público y gratuito</strong> (Open Access, repositorios institucionales y textos abiertos).</p>
+<hr>
+</section>
+<section id="tabla-de-notación-formal" class="level3">
+<h3 class="anchored" data-anchor-id="tabla-de-notación-formal">2. Tabla de Notación Formal</h3>
+<p>Para garantizar la consistencia matemática a lo largo del documento, la Tabla 1 consolida el conjunto completo de símbolos, operadores, subíndices e indicadores estadísticos empleados en el trabajo.</p>
+<section id="tabla-1-notación-matemática-formal-y-su-localización-de-introducción-en-el-documento" class="level4">
+<h4 class="anchored" data-anchor-id="tabla-1-notación-matemática-formal-y-su-localización-de-introducción-en-el-documento">Tabla 1: Notación matemática formal y su localización de introducción en el documento</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Símbolo</th>
+<th style="text-align: left;">Significado Matemático</th>
+<th style="text-align: left;">Sección de Introducción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(Y_t\)</span></td>
+<td style="text-align: left;">Serie temporal observada de casos confirmados mensuales de dengue en Colombia en el mes <span class="math inline">\(t\)</span></td>
+<td style="text-align: left;">Sección 3.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(\lambda\)</span></td>
+<td style="text-align: left;">Parámetro de forma de la transformación de estabilización de varianza de Box-Cox</td>
+<td style="text-align: left;">Sección 3.4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(Y_t^{(\lambda)}\)</span></td>
+<td style="text-align: left;">Serie transformada mediante la función de Box-Cox</td>
+<td style="text-align: left;">Sección 3.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(B\)</span></td>
+<td style="text-align: left;">Operador de rezago o retardo (<span class="math inline">\(B^k Y_t = Y_{t-k}\)</span>)</td>
+<td style="text-align: left;">Sección 3.3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(\nabla, \nabla_s\)</span></td>
+<td style="text-align: left;">Operador de diferencia regular <span class="math inline">\(\nabla = (1-B)\)</span> y estacional <span class="math inline">\(\nabla_s = (1-B^s)\)</span></td>
+<td style="text-align: left;">Sección 3.3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(s\)</span></td>
+<td style="text-align: left;">Periodo o frecuencia de estacionalidad (<span class="math inline">\(s = 12\)</span> meses para datos mensuales)</td>
+<td style="text-align: left;">Sección 3.3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(w_t\)</span></td>
+<td style="text-align: left;">Serie estacionaria obtenida tras aplicar diferenciación regular <span class="math inline">\(d\)</span> y estacional <span class="math inline">\(D\)</span></td>
+<td style="text-align: left;">Sección 3.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(p, d, q\)</span></td>
+<td style="text-align: left;">Órdenes autoregresivo, de integración y de medias móviles regulares</td>
+<td style="text-align: left;">Sección 3.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(P, D, Q\)</span></td>
+<td style="text-align: left;">Órdenes autoregresivo, de integración y de medias móviles estacionales</td>
+<td style="text-align: left;">Sección 3.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(\phi(B), \theta(B)\)</span></td>
+<td style="text-align: left;">Polinomios autoregresivo <span class="math inline">\(\text{AR}(p)\)</span> y de medias móviles <span class="math inline">\(\text{MA}(q)\)</span> regulares</td>
+<td style="text-align: left;">Sección 3.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(\Phi(B^s), \Theta(B^s)\)</span></td>
+<td style="text-align: left;">Polinomios autoregresivo <span class="math inline">\(\text{SAR}(P)\)</span> y de medias móviles <span class="math inline">\(\text{SMA}(Q)\)</span> estacionales</td>
+<td style="text-align: left;">Sección 3.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(\epsilon_t\)</span></td>
+<td style="text-align: left;">Proceso de ruido blanco gaussiano con media 0 y varianza constante <span class="math inline">\(\sigma^2_\epsilon\)</span></td>
+<td style="text-align: left;">Sección 3.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(\gamma(h), \rho(h)\)</span></td>
+<td style="text-align: left;">Función de autocovarianza (<span class="math inline">\(\text{ACVF}\)</span>) y de autocorrelación (<span class="math inline">\(\text{ACF}\)</span>) en el rezago <span class="math inline">\(h\)</span></td>
+<td style="text-align: left;">Sección 3.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(\alpha(h)\)</span></td>
+<td style="text-align: left;">Función de autocorrelación parcial (<span class="math inline">\(\text{PACF}\)</span>) en el rezago <span class="math inline">\(h\)</span></td>
+<td style="text-align: left;">Sección 3.2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(h\)</span></td>
+<td style="text-align: left;">Horizonte de pronóstico en meses (<span class="math inline">\(h = 1, 2, \dots, 6\)</span>)</td>
+<td style="text-align: left;">Sección 4.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(T\)</span></td>
+<td style="text-align: left;">Tamaño total de la serie observada (<span class="math inline">\(T = 132\)</span> meses, enero 2015 – diciembre 2025)</td>
+<td style="text-align: left;">Sección 3.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(T_{train}\)</span></td>
+<td style="text-align: left;">Tamaño del conjunto de entrenamiento en la ventana inicial de origen móvil</td>
+<td style="text-align: left;">Sección 5.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(i\)</span></td>
+<td style="text-align: left;">Subíndice que representa la iteración u origen en el esquema de origen móvil (<span class="math inline">\(i = 1, \dots, K\)</span>)</td>
+<td style="text-align: left;">Sección 5.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(\hat{Y}_{T+h|T}\)</span></td>
+<td style="text-align: left;">Pronóstico puntual a <span class="math inline">\(h\)</span> pasos proyectado desde el origen de tiempo <span class="math inline">\(T\)</span></td>
+<td style="text-align: left;">Sección 4.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(e_T(h)\)</span></td>
+<td style="text-align: left;">Error de pronóstico fuera de muestra a <span class="math inline">\(h\)</span> pasos, definido como <span class="math inline">\(Y_{T+h} - \hat{Y}_{T+h|T}\)</span></td>
+<td style="text-align: left;">Sección 4.2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(\text{RMSE}(h)\)</span></td>
+<td style="text-align: left;">Raíz del error cuadrático medio al horizonte de pronóstico <span class="math inline">\(h\)</span></td>
+<td style="text-align: left;">Sección 5.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(\text{MASE}(h)\)</span></td>
+<td style="text-align: left;">Error absoluto medio escalado al horizonte de pronóstico <span class="math inline">\(h\)</span></td>
+<td style="text-align: left;">Sección 5.2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(q_{naive}\)</span></td>
+<td style="text-align: left;">Escalador del MASE, calculado strictly sobre la muestra de entrenamiento</td>
+<td style="text-align: left;">Sección 5.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(I_{1-\alpha}(h)\)</span></td>
+<td style="text-align: left;">Intervalo de predicción al nivel de confianza <span class="math inline">\(1-\alpha\)</span> (<span class="math inline">\(80\%\)</span> y <span class="math inline">\(95\%\)</span>) para el horizonte <span class="math inline">\(h\)</span></td>
+<td style="text-align: left;">Sección 4.3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(S_{DM}(h)\)</span></td>
+<td style="text-align: left;">Estadístico de prueba de Diebold-Mariano corregido por el horizonte <span class="math inline">\(h\)</span></td>
+<td style="text-align: left;">Sección 5.4</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="fundamentación-de-objetos-y-procesos-estocásticos" class="level3">
+<h3 class="anchored" data-anchor-id="fundamentación-de-objetos-y-procesos-estocásticos">3. Fundamentación de Objetos y Procesos Estocásticos</h3>
+<section id="proceso-estocástico-y-estacionariedad-débil" class="level4">
+<h4 class="anchored" data-anchor-id="proceso-estocástico-y-estacionariedad-débil">3.1. Proceso Estocástico y Estacionariedad Débil</h4>
+<p>Definimos la serie mensual de casos de dengue como una realización finita <span class="math inline">\(\{y_t\}_{t=1}^T\)</span> de un proceso estocástico <span class="math inline">\(\{Y_t, t \in \mathbb{Z}\}\)</span>, conceptualizado como una colección infinita de variables aleatorias ordenadas temporalmente en un espacio de probabilidad filtrado <span class="math inline">\((\Omega, \mathcal{F}, \{\mathcal{F}_t\}, \mathbb{P})\)</span>.</p>
+<blockquote class="blockquote">
+<p><strong>Definición 3.1 (Estacionariedad Débil o en Sentido Amplio).</strong><br>
+Un proceso estocástico <span class="math inline">\(\{Y_t\}\)</span> se define como débilmente estacionario si cumple conjuntamente tres condiciones (Shumway &amp; Stoffer, 2017, Sección 1.3): 1. La esperanza matemática es finita y constante a lo largo del tiempo: <span class="math inline">\(\mathbb{E}[Y_t] = \mu &lt; \infty, \quad \forall t \in \mathbb{Z}\)</span>. 2. La varianza es finita y no depende del tiempo: <span class="math inline">\(\operatorname{Var}(Y_t) = \mathbb{E}[(Y_t - \mu)^2] = \sigma^2 &lt; \infty, \quad \forall t \in \mathbb{Z}\)</span>. 3. La autocovarianza entre dos momentos del tiempo <span class="math inline">\(t\)</span> y <span class="math inline">\(t+h\)</span> depende exclusivamente del rezago o separación temporal <span class="math inline">\(h\)</span>, y no del tiempo absoluto <span class="math inline">\(t\)</span>: <span class="math display">\[\operatorname{Cov}(Y_t, Y_{t+h}) = \mathbb{E}[(Y_t - \mu)(Y_{t+h} - \mu)] = \gamma(h), \quad \forall t, h \in \mathbb{Z}\]</span></p>
+</blockquote>
+<p><em>Supuestos explícitos:</em> Se asume que el proceso posee momentos de segundo orden finitos (<span class="math inline">\(\mathbb{E}[Y_t^2] &lt; \infty\)</span>). La presencia de tendencias estacionales y epidemiológicas en el dengue invalida la estacionariedad débil directa en niveles, lo que justifica la aplicación de transformaciones funcionales y operadores de diferencia.</p>
+<hr>
+</section>
+<section id="funciones-de-autocovarianza-y-autocorrelación-acvf-acf-pacf" class="level4">
+<h4 class="anchored" data-anchor-id="funciones-de-autocovarianza-y-autocorrelación-acvf-acf-pacf">3.2. Funciones de Autocovarianza y Autocorrelación (ACVF, ACF, PACF)</h4>
+<p>La dependencia estocástica temporal del proceso se caracteriza formalmente mediante la estructura de autocovarianza y autocorrelación.</p>
+<blockquote class="blockquote">
+<p><strong>Definición 3.2 (ACVF y ACF).</strong><br>
+La Función de Autocovarianza (<span class="math inline">\(\text{ACVF}\)</span>) <span class="math inline">\(\gamma(h)\)</span> y la Función de Autocorrelación (<span class="math inline">\(\text{ACF}\)</span>) <span class="math inline">\(\rho(h)\)</span> para un proceso débilmente estacionario en el rezago <span class="math inline">\(h \in \mathbb{Z}\)</span> se expresan como (Shumway &amp; Stoffer, 2017, Sección 1.4): <span class="math display">\[\gamma(h) = \operatorname{Cov}(Y_t, Y_{t+h}), \quad \rho(h) = \frac{\gamma(h)}{\gamma(0)} = \frac{\operatorname{Cov}(Y_t, Y_{t+h})}{\operatorname{Var}(Y_t)}\]</span> con propiedades estructurales <span class="math inline">\(\rho(0) = 1\)</span>, <span class="math inline">\(|\rho(h)| \le 1\)</span> y simetría <span class="math inline">\(\rho(h) = \rho(-h)\)</span>.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Definición 3.3 (PACF).</strong><br>
+La Función de Autocorrelación Parcial (<span class="math inline">\(\text{PACF}\)</span>) <span class="math inline">\(\alpha(h)\)</span> mide la correlación lineal entre <span class="math inline">\(Y_t\)</span> y <span class="math inline">\(Y_{t+h}\)</span> tras eliminar la influencia lineal de las variables intermedias <span class="math inline">\(\{Y_{t+1}, Y_{t+2}, \dots, Y_{t+h-1}\}\)</span>. Formalmente se define como el coeficiente <span class="math inline">\(\phi_{hh}\)</span> en la regresión autoregresiva de orden <span class="math inline">\(h\)</span> (Shumway &amp; Stoffer, 2017, Sección 3.2): <span class="math display">\[\alpha(h) = \phi_{hh}, \quad \text{donde } Y_t = \sum_{j=1}^h \phi_{hj} Y_{t-j} + e_t\]</span></p>
+</blockquote>
+<p><em>Uso metodológico en la solución:</em> La ACF y la PACF estimadas sobre la serie estacionaria permiten identificar preliminarmente los órdenes de los polinomios autoregresivos y de medias móviles (<span class="math inline">\(p, q, P, Q\)</span>) en la fase de identificación de Box-Jenkins.</p>
+<hr>
+</section>
+<section id="operadores-de-rezago-y-diferenciación" class="level4">
+<h4 class="anchored" data-anchor-id="operadores-de-rezago-y-diferenciación">3.3. Operadores de Rezago y Diferenciación</h4>
+<p>La manipulación algebraica de componentes temporales se efectúa mediante la álgebra de operadores sobre espacios de secuencias.</p>
+<blockquote class="blockquote">
+<p><strong>Definición 3.4 (Operador de Rezago y Diferencia).</strong><br>
+El operador de rezago <span class="math inline">\(B\)</span> desplaza la serie un periodo hacia atrás: <span class="math inline">\(B^k Y_t = Y_{t-k}\)</span> para <span class="math inline">\(k \in \mathbb{N}_0\)</span>. Se definen los operadores de diferencia regular <span class="math inline">\(\nabla\)</span> y estacional <span class="math inline">\(\nabla_s\)</span> de periodo <span class="math inline">\(s = 12\)</span> como (Hyndman &amp; Khandakar, 2008, Sección 3; Hyndman &amp; Athanasopoulos, 2021, Capítulo 9.1): <span class="math display">\[\nabla Y_t = (1 - B) Y_t = Y_t - Y_{t-1}\]</span> <span class="math display">\[\nabla_s^D \nabla^d Y_t = (1 - B^s)^D (1 - B)^d Y_t\]</span></p>
+</blockquote>
+<hr>
+</section>
+<section id="transformación-de-estabilización-de-varianza-de-box-cox" class="level4">
+<h4 class="anchored" data-anchor-id="transformación-de-estabilización-de-varianza-de-box-cox">3.4. Transformación de Estabilización de Varianza de Box-Cox</h4>
+<p>Las series epidemiológicas presentan frecuentemente heterocedasticidad condicionada por el nivel de la serie (mayor varianza en periodos epidémicos de alta incidencia). Para estabilizar la varianza del error y aproximar la normalidad, se aplica la familia de transformaciones paramétricas de Box-Cox.</p>
+<blockquote class="blockquote">
+<p><strong>Definición 3.5 (Transformación de Box-Cox).</strong><br>
+Dada la serie de casos observados <span class="math inline">\(Y_t &gt; 0\)</span>, la transformación funcional <span class="math inline">\(Y_t^{(\lambda)}\)</span> está parametrizada por <span class="math inline">\(\lambda \in \mathbb{R}\)</span> según (Vélez et al., 2015; Hyndman &amp; Athanasopoulos, 2021, Capítulo 3.1): <span class="math display">\[Y_t^{(\lambda)} = \begin{cases} \frac{Y_t^\lambda - 1}{\lambda}, &amp; \text{si } \lambda \neq 0 \\ \ln(Y_t), &amp; \text{si } \lambda = 0 \end{cases}\]</span></p>
+</blockquote>
+<p><em>Supuesto explícito y restricción metodológica:</em> La estimación del parámetro óptimo <span class="math inline">\(\lambda\)</span> (por ejemplo, vía máxima verosimilitud de Guerrero) se realiza <strong>estrictamente sobre la muestra de entrenamiento</strong> <span class="math inline">\(T_{train}\)</span> para prevenir la contaminación por información del futuro (data leakage) en la fase de pronóstico.</p>
+<hr>
+</section>
+<section id="estructura-formal-del-modelo-sarima" class="level4">
+<h4 class="anchored" data-anchor-id="estructura-formal-del-modelo-sarima">3.5. Estructura Formal del Modelo SARIMA</h4>
+<p>El modelo primario objeto de evaluación en este trabajo es el proceso Autoregresivo Integrado de Medias Móviles Estacional (<span class="math inline">\(\text{SARIMA}\)</span>), formulado por Box y Jenkins para capturar dinámicas estocásticas con patrones periódicos.</p>
+<blockquote class="blockquote">
+<p><strong>Definición 3.6 (Modelo</strong> <span class="math inline">\(\text{SARIMA}(p,d,q)\times(P,D,Q)_s\)</span>).<br>
+Sea <span class="math inline">\(Y_t\)</span> la serie observada y <span class="math inline">\(Y_t^{(\lambda)}\)</span> su transformación de Box-Cox. Decimos que <span class="math inline">\(\{Y_t^{(\lambda)}\}\)</span> sigue un modelo <span class="math inline">\(\text{SARIMA}(p,d,q)\times(P,D,Q)_s\)</span> con periodo estacional <span class="math inline">\(s = 12\)</span> si la serie diferenciada <span class="math inline">\(w_t = (1-B)^d (1-B^s)^D Y_t^{(\lambda)}\)</span> satisface la ecuación polinomial (Hyndman &amp; Khandakar, 2008, Sección 3.1; Hyndman &amp; Athanasopoulos, 2021, Capítulo 9.9): <span class="math display">\[\phi_p(B) \Phi_P(B^s) (1-B)^d (1-B^s)^D Y_t^{(\lambda)} = \theta_q(B) \Theta_Q(B^s) \epsilon_t\]</span> donde los operadores polinomiales se definen como: 1. Polinomio autoregresivo regular: <span class="math inline">\(\phi_p(B) = 1 - \phi_1 B - \phi_2 B^2 - \dots - \phi_p B^p\)</span> 2. Polinomio autoregresivo estacional: <span class="math inline">\(\Phi_P(B^s) = 1 - \Phi_1 B^s - \Phi_2 B^{2s} - \dots - \Phi_P B^{Ps}\)</span> 3. Polinomio de medias móviles regular: <span class="math inline">\(\theta_q(B) = 1 + \theta_1 B + \theta_2 B^2 + \dots + \theta_q B^q\)</span> 4. Polinomio de medias móviles estacional: <span class="math inline">\(\Theta_Q(B^s) = 1 + \Theta_1 B^s + \Theta_2 B^{2s} + \dots + \Theta_Q B^{Qs}\)</span> y <span class="math inline">\(\{\epsilon_t\} \sim \text{iid } \mathcal{N}(0, \sigma^2_\epsilon)\)</span> representa un proceso de ruido blanco gaussiano.</p>
+</blockquote>
+<hr>
+</section>
+<section id="modelos-de-referencia-benchmarks" class="level4">
+<h4 class="anchored" data-anchor-id="modelos-de-referencia-benchmarks">3.6. Modelos de Referencia (Benchmarks)</h4>
+<p>Para determinar si la complejidad matemática del modelo SARIMA se traduce en una ventaja predictiva real para el usuario institucional, se contrastará frente a tres referentes de diferente nivel de sofisticación (Hyndman &amp; Athanasopoulos, 2021, Capítulos 5.2 y 8.1):</p>
+<ol type="1">
+<li><strong>Referente Ingenuo (Naïve Benchmark):</strong> Proyecta como pronóstico puntual para cualquier horizonte <span class="math inline">\(h\)</span> el último valor observado en el origen de predicción: <span class="math display">\[\hat{Y}_{T+h|T}^{\text{Naïve}} = Y_T, \quad \forall h \ge 1\]</span></li>
+<li><strong>Medias Estacionales / Naïve Estacional (Seasonal Naïve Benchmark):</strong> Proyecta el valor observado en el mismo mes del periodo anual anterior (<span class="math inline">\(s = 12\)</span>): <span class="math display">\[\hat{Y}_{T+h|T}^{\text{SNaïve}} = Y_{T+h - m s}, \quad \text{donde } m = \lfloor(h-1)/s\rfloor + 1\]</span></li>
+<li><strong>Suavizamiento Exponencial Holt-Winters / ETS (Error, Trend, Seasonal):</strong> Modelo de espacio de estados que descompone la serie en componentes de nivel (<span class="math inline">\(l_t\)</span>), tendencia (<span class="math inline">\(b_t\)</span>) y estacionalidad (<span class="math inline">\(s_t\)</span>). Para una estructura aditiva <span class="math inline">\(\text{ETS}(A,A,A)\)</span>, la ecuación de pronóstico a <span class="math inline">\(h\)</span> pasos es: <span class="math display">\[\hat{Y}_{T+h|T}^{\text{ETS}} = l_T + h b_T + s_{T+h - m s}\]</span></li>
+</ol>
+<hr>
+</section>
+</section>
+<section id="resultados-teóricos-teoremas-y-pronóstico-óptimo" class="level3">
+<h3 class="anchored" data-anchor-id="resultados-teóricos-teoremas-y-pronóstico-óptimo">4. Resultados Teóricos, Teoremas y Pronóstico Óptimo</h3>
+<section id="condiciones-de-causalidad-e-invertibilidad" class="level4">
+<h4 class="anchored" data-anchor-id="condiciones-de-causalidad-e-invertibilidad">4.1. Condiciones de Causalidad e Invertibilidad</h4>
+<p>La validez matemática del modelo SARIMA para la generación de pronósticos estables requiere garantizar que el proceso admita una representación autoregresiva de orden infinito <span class="math inline">\(\text{AR}(\infty)\)</span> y de medias móviles de orden infinito <span class="math inline">\(\text{MA}(\infty)\)</span>.</p>
+<blockquote class="blockquote">
+<p><strong>Teorema 4.1 (Condición de Causalidad).</strong><br>
+El proceso <span class="math inline">\(\text{SARIMA}(p,d,q)\times(P,D,Q)_s\)</span> proyectado sobre la serie diferenciada <span class="math inline">\(w_t\)</span> es <strong>causal</strong> (depende únicamente del pasado del ruido blanco <span class="math inline">\(\{\epsilon_s, s \le t\}\)</span>) si y solo si los ceros de los polinomios autoregresivos regular <span class="math inline">\(\phi_p(z)\)</span> y estacional <span class="math inline">\(\Phi_P(z^s)\)</span> se encuentran estrictamente fuera del círculo unitario en el plano complejo (Shumway &amp; Stoffer, 2017, Teorema 3.1): <span class="math display">\[\phi_p(z) \neq 0 \quad \text{y} \quad \Phi_P(z^s) \neq 0 \quad \forall z \in \mathbb{C} \text{ tal que } |z| \le 1\]</span> Bajo esta condición, existe una representación <span class="math inline">\(\text{MA}(\infty)\)</span> dada por <span class="math inline">\(w_t = \sum_{j=0}^{\infty} \psi_j \epsilon_{t-j}\)</span>, donde <span class="math inline">\(\sum_{j=0}^{\infty} |\psi_j| &lt; \infty\)</span>.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Teorema 4.2 (Condición de Invertibilidad).</strong><br>
+El proceso es <strong>invertible</strong> (el ruido blanco <span class="math inline">\(\epsilon_t\)</span> puede expresarse como combinación lineal convergente del pasado del proceso <span class="math inline">\(\{w_s, s \le t\}\)</span>) si y solo si los ceros de los polinomios de medias móviles regular <span class="math inline">\(\theta_q(z)\)</span> y estacional <span class="math inline">\(\Theta_Q(z^s)\)</span> se encuentran estrictamente fuera del círculo unitario en el plano complejo (Shumway &amp; Stoffer, 2017, Teorema 3.2): <span class="math display">\[\theta_q(z) \neq 0 \quad \text{y} \quad \Theta_Q(z^s) \neq 0 \quad \forall z \in \mathbb{C} \text{ tal que } |z| \le 1\]</span> Bajo esta condición, existe una representación <span class="math inline">\(\text{AR}(\infty)\)</span> dada por <span class="math inline">\(\epsilon_t = \sum_{j=0}^{\infty} \pi_j w_{t-j}\)</span>, donde <span class="math inline">\(\sum_{j=0}^{\infty} |\pi_j| &lt; \infty\)</span>.</p>
+</blockquote>
+<p><em>Supuestos explícitos:</em> Los polinomios <span class="math inline">\(\phi_p(z)\)</span> y <span class="math inline">\(\theta_q(z)\)</span> no comparten raíces comunes (ausencia de cancelación de factores).</p>
+<hr>
+</section>
+<section id="formulación-del-predictor-óptimo-lineal-y-varianza-del-error" class="level4">
+<h4 class="anchored" data-anchor-id="formulación-del-predictor-óptimo-lineal-y-varianza-del-error">4.2. Formulación del Predictor Óptimo Lineal y Varianza del Error</h4>
+<blockquote class="blockquote">
+<p><strong>Teorema 4.3 (Predictor Óptimo de Mínimo Error Cuadrático Medio).</strong><br>
+Sea el conjunto de información disponible hasta el momento <span class="math inline">\(T\)</span> denotado por la <span class="math inline">\(\sigma\)</span>-álgebra <span class="math inline">\(\mathcal{F}_T = \sigma(Y_1, Y_2, \dots, Y_T)\)</span>. El predictor puntual <span class="math inline">\(\hat{Y}_{T+h|T}\)</span> que minimiza el error cuadrático medio de predicción <span class="math inline">\(\mathbb{E}[(Y_{T+h} - g(\mathcal{F}_T))^2]\)</span> es la esperanza condicional (Shumway &amp; Stoffer, 2017, Sección 3.4 y Teorema 3.3): <span class="math display">\[\hat{Y}_{T+h|T} = \mathbb{E}[Y_{T+h} \mid \mathcal{F}_T]\]</span> Expresando el proceso en su representación de medias móviles <span class="math inline">\(Y_{T+h} = \sum_{j=0}^{\infty} \psi_j \epsilon_{T+h-j}\)</span> con <span class="math inline">\(\psi_0 = 1\)</span>, el error de pronóstico a <span class="math inline">\(h\)</span> pasos <span class="math inline">\(e_T(h)\)</span> es: <span class="math display">\[e_T(h) = Y_{T+h} - \hat{Y}_{T+h|T} = \sum_{j=0}^{h-1} \psi_j \epsilon_{T+h-j}\]</span> La media del error de pronóstico es nula (<span class="math inline">\(\mathbb{E}[e_T(h)] = 0\)</span>) y su varianza teórica a <span class="math inline">\(h\)</span> pasos está dada por (Shumway &amp; Stoffer, 2017, Sección 3.4): <span class="math display">\[\sigma^2(h) = \operatorname{Var}(e_T(h)) = \sigma^2_\epsilon \sum_{j=0}^{h-1} \psi_j^2\]</span></p>
+</blockquote>
+<p><em>Propiedad fundamental:</em> La varianza del error de pronóstico <span class="math inline">\(\sigma^2(h)\)</span> es una función no decreciente del horizonte <span class="math inline">\(h\)</span>.</p>
+<hr>
+</section>
+<section id="intervalos-de-predicción-e-incertidumbre" class="level4">
+<h4 class="anchored" data-anchor-id="intervalos-de-predicción-e-incertidumbre">4.3. Intervalos de Predicción e Incertidumbre</h4>
+<blockquote class="blockquote">
+<p><strong>Definición 4.1 (Intervalos de Predicción Gaussianos).</strong><br>
+Bajo el supuesto de que el proceso de ruido blanco es independiente e idénticamente distribuido normal <span class="math inline">\(\{\epsilon_t\} \sim \text{iid } \mathcal{N}(0, \sigma^2_\epsilon)\)</span>, el error de pronóstico <span class="math inline">\(e_T(h)\)</span> sigue una distribución gaussiana. El intervalo de predicción simétrico de nivel <span class="math inline">\((1-\alpha) \times 100\%\)</span> para <span class="math inline">\(Y_{T+h}\)</span> se construye como (Hyndman &amp; Athanasopoulos, 2021, Capítulo 5.5): <span class="math display">\[I_{1-\alpha}(h) = \left[ \hat{Y}_{T+h|T} - z_{1-\alpha/2} \sqrt{\sigma^2(h)}, \quad \hat{Y}_{T+h|T} + z_{1-\alpha/2} \sqrt{\sigma^2(h)} \right]\]</span> donde <span class="math inline">\(z_{1-\alpha/2}\)</span> representa el cuantil <span class="math inline">\((1-\alpha/2)\)</span> de la distribución normal estándar <span class="math inline">\(\mathcal{N}(0,1)\)</span>.</p>
+</blockquote>
+<p><em>Limitación teórica:</em> En la práctica, este intervalo gaussiano ignora la incertidumbre en la estimación de los parámetros del modelo y supone colas normales. Por ello, se contrasta empíricamente con intervalos construidos mediante <strong>bootstrap de residuos</strong> (Hyndman &amp; Athanasopoulos, 2021, Capítulo 5.5).</p>
+<hr>
+</section>
+</section>
+<section id="herramientas-metodológicas-de-evaluación-y-validación-fuera-de-muestra" class="level3">
+<h3 class="anchored" data-anchor-id="herramientas-metodológicas-de-evaluación-y-validación-fuera-de-muestra">5. Herramientas Metodológicas de Evaluación y Validación Fuera de Muestra</h3>
+<section id="esquema-de-validación-por-origen-móvil-rolling-origin-cross-validation" class="level4">
+<h4 class="anchored" data-anchor-id="esquema-de-validación-por-origen-móvil-rolling-origin-cross-validation">5.1. Esquema de Validación por Origen Móvil (Rolling-Origin Cross-Validation)</h4>
+<p>Para evaluar la capacidad predictiva de los modelos en condiciones operativas reales y evitar el sobreajuste en muestra, se implementa una estructura de <strong>validación por origen móvil</strong> (tiempo de evaluación fuera de muestra con ventana creciente) (Hyndman &amp; Athanasopoulos, 2021, Capítulo 5.8).</p>
+<p>Sea <span class="math inline">\(T_{train}\)</span> la longitud de la ventana inicial de entrenamiento. En cada iteración <span class="math inline">\(i = 1, 2, \dots, K\)</span> (donde <span class="math inline">\(K\)</span> es el número total de cortes o resubmuestras de validación, con <span class="math inline">\(K \ge 25\)</span> según los requerimientos del curso): 1. El modelo se reestima utilizando únicamente los datos observados hasta el origen <span class="math inline">\(T_i = T_{train} + i - 1\)</span>. 2. Se generan pronósticos puntuales e intervalos a los horizontes <span class="math inline">\(h = 1, 2, \dots, 6\)</span> meses: <span class="math inline">\(\hat{Y}_{T_i+h | T_i}\)</span>. 3. Se registra la serie de errores fuera de muestra: <span class="math inline">\(e_{T_i}(h) = Y_{T_i+h} - \hat{Y}_{T_i+h | T_i}\)</span>.</p>
+<hr>
+</section>
+<section id="métricas-fuera-de-muestra-rmse-y-mase" class="level4">
+<h4 class="anchored" data-anchor-id="métricas-fuera-de-muestra-rmse-y-mase">5.2. Métricas Fuera de Muestra: RMSE y MASE</h4>
+<p>Las métricas de precisión fuera de muestra sintetizan la magnitud de los errores observados a través de los <span class="math inline">\(K\)</span> orígenes móviles para cada horizonte <span class="math inline">\(h\)</span>.</p>
+<blockquote class="blockquote">
+<p><strong>Definición 5.1 (Raíz del Error Cuadrático Medio - RMSE).</strong><br>
+Para un horizonte fijo <span class="math inline">\(h\)</span>, el <span class="math inline">\(\text{RMSE}(h)\)</span> penaliza de forma cuadrática las grandes desviaciones (Hyndman &amp; Koehler, 2006, Sección 3.1): <span class="math display">\[\text{RMSE}(h) = \sqrt{ \frac{1}{K} \sum_{i=1}^K \left( e_{T_i}(h) \right)^2 }\]</span></p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Definición 5.2 (Error Absoluto Medio Escalado - MASE).</strong><br>
+El <span class="math inline">\(\text{MASE}(h)\)</span> es una métrica de precisión invariante a la escala de la variable, propuesta por Hyndman y Koehler (2006), que compara el error absoluto medio del modelo candidato contra el error absoluto medio en muestra de un pronóstico ingenuo estacional (<span class="math inline">\(s = 12\)</span>): <span class="math display">\[\text{MASE}(h) = \frac{\frac{1}{K} \sum_{i=1}^K |e_{T_i}(h)|}{q_{naive}}\]</span> donde el escalador <span class="math inline">\(q_{naive}\)</span> se define explícita y formalmente como (Hyndman &amp; Koehler, 2006, Sección 3.2): <span class="math display">\[q_{naive} = \frac{1}{T_{train} - s} \sum_{t=s+1}^{T_{train}} |Y_t - Y_{t-s}|\]</span></p>
+</blockquote>
+<p><em>Regla conceptual fundamental:</em> <strong>El escalador</strong> <span class="math inline">\(q_{naive}\)</span> debe calcularse de manera estricta y exclusiva sobre los datos de la muestra de entrenamiento inicial <span class="math inline">\(T_{train}\)</span>. Calcular el escalador sobre la serie completa <span class="math inline">\(T\)</span> constituiría una violación metodológica grave al incorporar información futura en la escala de medición. Un <span class="math inline">\(\text{MASE}(h) &lt; 1\)</span> indica que el modelo evaluado supera al referente ingenuo estacional fuera de muestra en el horizonte <span class="math inline">\(h\)</span>.</p>
+<hr>
+</section>
+<section id="cobertura-empírica-de-intervalos-de-predicción" class="level4">
+<h4 class="anchored" data-anchor-id="cobertura-empírica-de-intervalos-de-predicción">5.3. Cobertura Empírica de Intervalos de Predicción</h4>
+<p>Para corroborar si la incertidumbre declarada por los modelos es numéricamente fidedigna, se evalúa la cobertura empírica de los intervalos de predicción construidos al <span class="math inline">\(80\%\)</span> y <span class="math inline">\(95\%\)</span> nominales.</p>
+<blockquote class="blockquote">
+<p><strong>Definición 5.3 (Cobertura Empírica).</strong><br>
+La cobertura empírica <span class="math inline">\(\hat{C}_{1-\alpha}(h)\)</span> para un horizonte <span class="math inline">\(h\)</span> y un nivel de confianza nominal <span class="math inline">\((1-\alpha)\)</span> es la proporción real de observaciones fuera de muestra que caen dentro de los límites del intervalo proyectado (Hyndman &amp; Athanasopoulos, 2021, Capítulo 5.5): <span class="math display">\[\hat{C}_{1-\alpha}(h) = \frac{1}{K} \sum_{i=1}^K \mathbb{I}\left( Y_{T_i+h} \in I_{1-\alpha, T_i}(h) \right)\]</span> donde <span class="math inline">\(\mathbb{I}(\cdot)\)</span> es la función indicadora.</p>
+</blockquote>
+<p><em>Criterio de interpretación:</em> Con <span class="math inline">\(K \approx 25\)</span> orígenes, existe un error de muestreo apreciable (<span class="math inline">\(\approx \pm 0.09\)</span> para una proporción nominal de <span class="math inline">\(0.95\)</span>). Por tanto, desviaciones pequeñas (e.g., cobertura empírica del <span class="math inline">\(91\%\)</span> frente a un nominal del <span class="math inline">\(95\%\)</span>) están dentro del rango aleatorio esperable, mientras que diferencias pronunciadas (e.g., cobertura del <span class="math inline">\(65\%\)</span>) evidencian fallas en el supuesto de normalidad o subestimación de la variabilidad.</p>
+<hr>
+</section>
+<section id="prueba-de-comparación-de-precisión-de-diebold-y-mariano" class="level4">
+<h4 class="anchored" data-anchor-id="prueba-de-comparación-de-precisión-de-diebold-y-mariano">5.4. Prueba de Comparación de Precisión de Diebold y Mariano</h4>
+<p>Para establecer si la superioridad observada en las métricas puntuales (MASE o RMSE) entre el modelo SARIMA y los referentes es estadísticamente significativa o si puede ser atribuida al ruido muestral, se aplica la prueba formal de Diebold y Mariano (1995).</p>
+<blockquote class="blockquote">
+<p><strong>Definición 5.4 (Estadístico de Diebold-Mariano).</strong><br>
+Sean <span class="math inline">\(\{e_{1, i}(h)\}_{i=1}^K\)</span> y <span class="math inline">\(\{e_{2, i}(h)\}_{i=1}^K\)</span> las secuencias de errores de pronóstico a <span class="math inline">\(h\)</span> pasos de dos modelos competidores (e.g., SARIMA vs. Naïve Estacional) obtenidos en los <span class="math inline">\(K\)</span> orígenes de validación. Se define la serie de diferencias de pérdida <span class="math inline">\(d_i(h)\)</span> mediante una función de pérdida <span class="math inline">\(L(\cdot)\)</span> (típicamente cuadrática <span class="math inline">\(L(e) = e^2\)</span> o absoluta <span class="math inline">\(L(e) = |e|\)</span>): <span class="math display">\[d_i(h) = L(e_{1, i}(h)) - L(e_{2, i}(h))\]</span> Se plantea el contraste de hipótesis formal (Diebold &amp; Mariano, 1995, Sección 1.1): <span class="math display">\[H_0: \mathbb{E}[d_i(h)] = 0 \quad \text{(Igualdad de precisión predictiva esperada)}\]</span> <span class="math display">\[H_1: \mathbb{E}[d_i(h)] &lt; 0 \quad \text{(El Modelo 1 es significativamente más preciso que el Modelo 2)}\]</span> El estadístico de prueba <span class="math inline">\(S_{DM}(h)\)</span> se define como (Diebold &amp; Mariano, 1995, Sección 1.2): <span class="math display">\[S_{DM}(h) = \frac{\bar{d}(h)}{\sqrt{ \frac{\hat{V}(h)}{K} }} \ \xrightarrow{d} \ \mathcal{N}(0, 1) \quad \text{bajo } H_0\]</span> donde <span class="math inline">\(\bar{d}(h) = \frac{1}{K} \sum_{i=1}^K d_i(h)\)</span> y <span class="math inline">\(\hat{V}(h)\)</span> es un estimador consistente de la varianza asintótica de la media de las diferencias de pérdida, que incorpora la autocovarianza hasta el rezago <span class="math inline">\((h-1)\)</span> para corregir la autocorrelación inducida por horizontes de pronóstico solapados (<span class="math inline">\(h &gt; 1\)</span>): <span class="math display">\[\hat{V}(h) = \hat{\gamma}_d(0) + 2 \sum_{k=1}^{h-1} \hat{\gamma}_d(k)\]</span> con <span class="math inline">\(\hat{\gamma}_d(k) = \frac{1}{K} \sum_{i=k+1}^K (d_i(h) - \bar{d}(h))(d_{i-k}(h) - \bar{d}(h))\)</span>.</p>
+</blockquote>
+<p><em>Advertencia de supuestos y potencia:</em> La prueba de Diebold-Mariano asume que los modelos comparados no están anidados (condición satisfecha al comparar SARIMA contra Naïve Estacional o ETS). Con un número de orígenes <span class="math inline">\(K \approx 25\)</span>, la potencia del contraste es moderada, por lo que un no rechazo de <span class="math inline">\(H_0\)</span> debe interpretarse rigurosamente como la imposibilidad empírica de distinguir el desempeño predictivo frente al ruido muestral, y no como una prueba concluyente de equivalencia teórica.</p>
+<hr>
+</section>
+</section>
+</section>
 <section id="solución-al-problema" class="level2">
 <h2 class="anchored" data-anchor-id="solución-al-problema">Solución al problema</h2>
 <section id="qúe-dice-la-serie-visualmente" class="level3">
@@ -2938,6 +3253,9 @@ $incluir_c
 [1] FALSE</code></pre>
 </div>
 </div>
+<p>La media muestral de la serie diferenciada es <span class="math inline">\(\overline{W} = 0.0044\)</span>. Dado que el factor de ajuste por autocorrelación hasta el rezago <span class="math inline">\(h = s + 1 = 13\)</span> dió positivo (<span class="math inline">\(1 + 2\sum_{k=1}^{13} r_k = 2.0545\)</span>), se pudo calcular el error estándar de la media muestral, obteniendo <span class="math inline">\(S_W = 0,0246\)</span>. El estadístico resultante es <span class="math inline">\(t_{\text{muestral}} = \overline{W} / S_W = 0,180\)</span>, valor que es menor a <span class="math inline">\(2\)</span>.</p>
+<p>Al ajustar el modelo preliminar sobre <span class="math inline">\(W_t\)</span> incluyendo el intercepto por máxima verosimilitud, se obtuvo una estimación <span class="math inline">\(\hat{\theta}_0 = 0,0039\)</span> con un error estándar de <span class="math inline">\(0.0532\)</span>, lo que arroja un estadístico <span class="math inline">\(t = 0.073\)</span>, que también es menor a <span class="math inline">\(2\)</span>.</p>
+<p>Ambas pruebas coinciden en que la media de <span class="math inline">\(W_t\)</span> no difiere estadísticamente de cero. En consecuencia, no se incluye la constante<span class="math inline">\(\theta_0\)</span> (<code>include.mean = FALSE</code>) y se continúa con el ajuste de los modelos candidatos sin término de deriva.</p>
 </section>
 <section id="comparación-entre-candidatos" class="level3">
 <h3 class="anchored" data-anchor-id="comparación-entre-candidatos">Comparación entre candidatos</h3>
@@ -2960,73 +3278,252 @@ $incluir_c
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">SARIMA(1,1,0)(1,0,1)12</td>
+<td style="text-align: left;">$\text{SARIMA}(1,1,0)(1,0,1)_{12}$</td>
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">-435.33</td>
-<td style="text-align: right;">-428.76</td>
+<td style="text-align: right;">-428.49</td>
 <td style="text-align: right;">-427.01</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">SARIMA(1,1,1)(1,0,1)12</td>
+<td style="text-align: left;">$\text{SARIMA}(1,1,1)(1,0,1)_{12}$</td>
 <td style="text-align: right;">4</td>
 <td style="text-align: right;">-433.75</td>
-<td style="text-align: right;">-426.13</td>
+<td style="text-align: right;">-425.78</td>
 <td style="text-align: right;">-422.67</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">SARIMA(1,1,0)(1,0,0)12</td>
+<td style="text-align: left;">$\text{SARIMA}(1,1,0)(1,0,0)_{12}$</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">-416.34</td>
-<td style="text-align: right;">-412.25</td>
+<td style="text-align: right;">-411.99</td>
 <td style="text-align: right;">-410.80</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">SARIMA(0,1,1)(1,0,1)12</td>
+<td style="text-align: left;">$\text{SARIMA}(0,1,1)(1,0,1)_{12}$</td>
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">-418.14</td>
-<td style="text-align: right;">-412.88</td>
+<td style="text-align: right;">-412.53</td>
 <td style="text-align: right;">-409.83</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">SARIMA(1,1,1)(1,0,0)12</td>
+<td style="text-align: left;">$\text{SARIMA}(1,1,1)(1,0,0)_{12}$</td>
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">-415.69</td>
-<td style="text-align: right;">-410.65</td>
+<td style="text-align: right;">-410.28</td>
 <td style="text-align: right;">-407.38</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">SARIMA(1,1,0)(0,0,1)12</td>
+<td style="text-align: left;">$\text{SARIMA}(1,1,0)(0,0,1)_{12}$</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">-407.81</td>
-<td style="text-align: right;">-404.32</td>
+<td style="text-align: right;">-404.01</td>
 <td style="text-align: right;">-402.27</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">SARIMA(1,1,1)(0,0,1)12</td>
+<td style="text-align: left;">$\text{SARIMA}(1,1,1)(0,0,1)_{12}$</td>
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">-408.36</td>
-<td style="text-align: right;">-404.06</td>
+<td style="text-align: right;">-403.63</td>
 <td style="text-align: right;">-400.04</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">SARIMA(0,1,1)(1,0,0)12</td>
+<td style="text-align: left;">$\text{SARIMA}(0,1,1)(1,0,0)_{12}$</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">-399.93</td>
-<td style="text-align: right;">-397.18</td>
+<td style="text-align: right;">-396.77</td>
 <td style="text-align: right;">-394.39</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">SARIMA(0,1,1)(0,0,1)12</td>
+<td style="text-align: left;">$\text{SARIMA}(0,1,1)(0,0,1)_{12}$</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">-397.32</td>
-<td style="text-align: right;">-394.88</td>
+<td style="text-align: right;">-394.41</td>
 <td style="text-align: right;">-391.78</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-<p>De acuerdo a la tabla comparativa entre los modelos planteados, los dos modelos con valores más bajos en los criterios fueron <span class="math inline">\(\text{SARIMA}(1,1,0)(1,0,1)_{12}\)</span> y <span class="math inline">\(\text{SARIMA}(1,1,1)(1,0,1)_{12}\)</span>, donde el primero supera por diferencias de aproximadamente 2 en AIC y BIC, sin embargo, en el SBC hay una diferencia de alrededor 5 puntos, este es el mayor indicador para elegir como modelo ganador a <span class="math inline">\(\text{SARIMA}(1,1,0)(1,0,1)_{12}\)</span>.</p>
+<p>De acuerdo a la tabla comparativa entre los modelos planteados, los dos modelos con valores más bajos en los criterios fueron <span class="math inline">\(\text{SARIMA}(1,1,0)(1,0,1)_{12}\)</span> y <span class="math inline">\(\text{SARIMA}(1,1,1)(1,0,1)_{12}\)</span>, donde el primero supera por diferencias de aproximadamente 2 en AIC y BIC, sin embargo, en el SBC está por arriba por alrededor de 5 puntos, este es el mayor indicador para elegir como modelo ganador a <span class="math inline">\(\text{SARIMA}(1,1,0)(1,0,1)_{12}\)</span>.</p>
+</section>
+<section id="diagnósticos" class="level3">
+<h3 class="anchored" data-anchor-id="diagnósticos">Diagnósticos</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>supuestos <span class="ot">&lt;-</span> <span class="fu">validar_sarima</span>(<span class="at">z=</span>serie, <span class="at">orden =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">0</span>), <span class="at">estacional =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>), <span class="at">incluir_constante =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>supuestos<span class="sc">$</span>ljung_box</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<caption>Prueba de Ljung-Box</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">K</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Q_LB</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">gl</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Crit_5</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Valor_p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">13.91</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">16.92</td>
+<td style="text-align: right;">0.126</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">22.82</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">32.67</td>
+<td style="text-align: right;">0.354</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">34.37</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">47.40</td>
+<td style="text-align: right;">0.402</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>supuestos<span class="sc">$</span>graf_acf</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img role="img" src="data:image/png;base64,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" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Para todos los valores de <span class="math inline">\(K\)</span> no se rechaza <span class="math inline">\(H_0\)</span> en la prueba de Ljung-Box, por lo que, con un nivel de significancia del 5%, hay evidencia muestral suficiente para sugerir que no hay autocorrelación significativa en los residuos hasta el rezago <span class="math inline">\(K\)</span> (para los 3 <span class="math inline">\(K\)</span>), por lo que el modelo logra captar bien la estructura temporal. Esto también se concluye con la ACF de los residuos, donde ningún rezago supera la banda de significancia.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>supuestos<span class="sc">$</span>coeficientes</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<caption>Parámetros estimados (ML)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Parametro</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Estimacion</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">EE</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">t_stat</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ar1</td>
+<td style="text-align: right;">-0.2940</td>
+<td style="text-align: right;">0.0875</td>
+<td style="text-align: right;">-3.36</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">sar1</td>
+<td style="text-align: right;">0.9782</td>
+<td style="text-align: right;">0.0531</td>
+<td style="text-align: right;">18.41</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sma1</td>
+<td style="text-align: right;">0.8381</td>
+<td style="text-align: right;">0.2084</td>
+<td style="text-align: right;">4.02</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Todos los coeficientes superan el umbral <span class="math inline">\(\vert{}t\vert{} &gt; 2\)</span> (<code>ar1</code> con <span class="math inline">\(t = -3,36\)</span>, <code>sar1</code> con <span class="math inline">\(t = 18,41\)</span> y <code>sma1</code> con <span class="math inline">\(t = 4,02\)</span>), por lo que individualmente aportan información al ajuste.</p>
+<p>El parámetro autorregresivo vale <span class="math inline">\(\hat{\phi}_1 = -0,2940\)</span>, ubicándose claramente dentro de la región de estacionariedad (<span class="math inline">\(\vert{}\hat{\phi}_1\vert{} &lt; 1\)</span>). El coeficiente autorregresivo estacional vale <span class="math inline">\(\hat{\Phi}_1 = 0,9782\)</span> (muy cercano a 1). Esto indica que el polinomio <span class="math inline">\((1 - 0,9782 B^{12})\)</span> está imitando un operador de diferencia estacional <span class="math inline">\(\nabla_{12} = (1 - B^{12})\)</span>. Al mismo tiempo, el parámetro de media móvil estacional es muy alto (<span class="math inline">\(\hat{\Theta}_1 = 0,8381\)</span>). Cuando en un modelo estacional mixto <span class="math inline">\((1,0,1)_{12}\)</span> tanto <span class="math inline">\(\hat{\Phi}_1\)</span> como <span class="math inline">\(\hat{\Theta}_1\)</span> son muy cercanos a <span class="math inline">\(1\)</span>, ambos factores tienden a cancelarse entre sí (<span class="math inline">\(\frac{1 - 0,8381 B^{12}}{1 - 0,9782 B^{12}}\)</span>).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>supuestos<span class="sc">$</span>normalidad</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<caption>Diagnóstico de normalidad</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">n_residuos</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Asimetria</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Curtosis</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">JB</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Valor_p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">130</td>
+<td style="text-align: right;">-0.338</td>
+<td style="text-align: right;">3.267</td>
+<td style="text-align: right;">3.08</td>
+<td style="text-align: right;">0.214</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>supuestos<span class="sc">$</span>graf_qq</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img role="img" src="data:image/png;base64,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" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>La prueba de Jarque-Bera tiene un valor p &gt; 0.05, por lo que con un nivel de significancia del 5%, no se rechaza <span class="math inline">\(H_0\)</span>, así se acepta normalidad en los residuos. Esto también se ve en la asímetria (muy cercana a 0) y en la curtosis (aproximadamente 3). El QQ-plot tiene la mayoría de puntos pegados de la línea teórica, a excepción de algunos puntos en los extremos, aunque estos representan una porción considerablemente pequeña en comparación al número total de residuos, por lo que se acepta normalidad de forma visual también.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>supuestos<span class="sc">$</span>sobreajuste</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<caption>Pruebas de sobreajuste</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Sobreajuste</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Parametro</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Estimacion</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">t_stat</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">SARIMA(2,1,0)(1,0,1)_12</td>
+<td style="text-align: left;">ar2</td>
+<td style="text-align: right;">-0.1236</td>
+<td style="text-align: right;">-1.40</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SARIMA(1,1,1)(1,0,1)_12</td>
+<td style="text-align: left;">ma1</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">105.09</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SARIMA(1,1,0)(2,0,1)_12</td>
+<td style="text-align: left;">sar2</td>
+<td style="text-align: right;">-0.1979</td>
+<td style="text-align: right;">-2.02</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SARIMA(1,1,0)(1,0,2)_12</td>
+<td style="text-align: left;">sma2</td>
+<td style="text-align: right;">0.1864</td>
+<td style="text-align: right;">2.03</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Agregar un segundo término autorregresivo (<code>ar2</code> en <span class="math inline">\(\text{SARIMA}(2,1,0)(1,0,1)_{12}\)</span>) resulta estadísticamente no significativo (<span class="math inline">\(\hat{\phi}_2 = -0,1236\)</span>, <span class="math inline">\(t = -1,40\)</span>, <span class="math inline">\(\vert{}t\vert{} \le 2\)</span>), por lo que el orden <span class="math inline">\(p = 1\)</span> es suficiente.</p>
+<p>Agregar un término de media móvil (<code>ma1</code> en <span class="math inline">\(\text{SARIMA}(1,1,1)(1,0,1)_{12}\)</span>) hace que no se cumple invertibilidad (<span class="math inline">\(\hat{\theta_1}=1\)</span>). Un parámetro MA con <span class="math inline">\(\vert{}\hat{\theta}\vert{} \ge 0,99\)</span> evidencia sobre-diferenciación y cancelación con el operador <span class="math inline">\(\nabla\)</span>, invalidando este modelo.</p>
+<p>Tanto al incorporar <code>sar2</code> (<span class="math inline">\(\text{SARIMA}(1,1,0)(2,0,1)_{12}\)</span>, <span class="math inline">\(\hat{\Phi}_2 = -0,1979\)</span>, <span class="math inline">\(t = -2,02\)</span>) como al incorporar <code>sma2</code> (<span class="math inline">\(\text{SARIMA}(1,1,0)(1,0,2)_{12}\)</span>, <span class="math inline">\(\hat{\Theta}_2 = 0,1864\)</span>, <span class="math inline">\(t = 2,03\)</span>), los estadísticos quedan apenas en el borde del umbral crítico (<span class="math inline">\(\vert{}t\vert{} \approx 2\)</span>).</p>
+<p>Este comportamiento no responde a una verdadera estructura estacional de orden 2, sino a una consecuencia directa de la <strong>casi raíz unitaria estacional</strong> (<span class="math inline">\(\hat{\Phi}_1 = 0,9782\)</span>) y la <strong>casi cancelación de factores</strong> (<span class="math inline">\(\hat{\Phi}_1 \approx \hat{\Theta}_1\)</span>) detectadas en el modelo base, que vuelven inestable la estimación al añadir más parámetros en <span class="math inline">\(B^{12}\)</span>.</p>
+<p>Las pruebas de sobreajuste confirman que el reloj regular no requiere mayor complejidad, pero que la parte estacional <span class="math inline">\((1,0,1)_{12}\)</span> presenta redundancia y proximidad a una raíz unitaria estacional. En lugar de escalar a modelos de orden estacional 2, el diagnóstico indica que se debe reemplazar <span class="math inline">\((1,0,1)_{12}\)</span> por una estructura estacional más parsimoniosa: ya sea introduciendo la diferencia estacional (<span class="math inline">\(D = 1\)</span>) mediante <span class="math inline">\(\text{SARIMA}(1,1,0)(0,1,1)_{12}\)</span> (o <span class="math inline">\((0,1,1)(0,1,1)_{12}\)</span>) para absorber la raíz unitaria en <span class="math inline">\(B^{12}\)</span>, o manteniendo <span class="math inline">\(D = 0\)</span> con un único factor estacional simple (<span class="math inline">\(\text{SARIMA}(1,1,0)(1,0,0)_{12}\)</span> o <span class="math inline">\((1,1,0)(0,0,1)_{12}\)</span>.</p>
 </section>
 </section>
 <section id="referencias-bibliográficas" class="level2 unnumbered">
