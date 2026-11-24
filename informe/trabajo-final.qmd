@@ -3,6 +3,7 @@ title: "Trabajo final - Pronóstico de casos de dengue en Colombia (2015-2025)"
 subtitle: "Series de Tiempo (3009297)"
 lang: es
 bibliography: referencias.bib
+nocite: '@*'
 params:
   fecha_corte: "2025-12-01"
   horizonte: 6
