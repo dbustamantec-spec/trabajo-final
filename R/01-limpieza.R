@@ -3,11 +3,10 @@
 # Cada archivo es un xlsx, y uno de ellos pesa más de 100 megas, por lo que
 # GitHub no lo admite. Se intentó trabajar con .zip y .csv, pero se sigue
 # superando la capacidad máxima. Por tanto, en "crudos" dentro de "datos"
-# están todas las bases de datos crudas excepto la que supera el peso
-# permitido (la del 2024), por esto todo este código está comentado para 
-# evitar problemas con el dataset no cargado. Si se desea correr este 
-# código se debe ingresar a la página de sivigila y descargar la base de 
-# datos que falta (casos de dengue 2024). 
+# no están las bases de datos crudas porque el archivo .zip queda muy pesado,
+# por esto todo este código está comentado para evitar problemas. Si se desea
+# correr este código se debe ingresar a la página de sivigila y descargar las 
+# bases de datos. 
 
 #library(dplyr)
 #library(lubridate)
