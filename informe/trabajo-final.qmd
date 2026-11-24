@@ -208,6 +208,12 @@ De esta manera los candidatos son:
 constante(serie)
 ```
 
+La media muestral de la serie diferenciada es $\overline{W} = 0.0044$. Dado que el factor de ajuste por autocorrelación hasta el rezago $h = s + 1 = 13$ dió positivo ($1 + 2\sum_{k=1}^{13} r_k = 2.0545$), se pudo calcular el error estándar de la media muestral, obteniendo $S_W = 0,0246$. El estadístico resultante es $t_{\text{muestral}} = \overline{W} / S_W = 0,180$, valor que es menor a $2$.
+
+Al ajustar el modelo preliminar sobre $W_t$ incluyendo el intercepto por máxima verosimilitud, se obtuvo una estimación $\hat{\theta}_0 = 0,0039$ con un error estándar de $0.0532$, lo que arroja un estadístico $t = 0.073$, que también es menor a $2$.
+
+Ambas pruebas coinciden en que la media de $W_t$ no difiere estadísticamente de cero. En consecuencia, no se incluye la constante$\theta_0$ (`include.mean = FALSE`) y se continúa con el ajuste de los modelos candidatos sin término de deriva.
+
 ### Comparación entre candidatos
 
 Como ya se vió en el paso anterior, para esta serie de tiempo no se debe incluir la constante o intercepto. Esta decisión se trae hasta los criterios de información en `incluir_constante = FALSE`.
@@ -221,6 +227,8 @@ comparar_candidatos(w = serie, candidatos = candidatos, incluir_constante = FALS
 
 De acuerdo a la tabla comparativa entre los modelos planteados, los dos modelos con valores más bajos en los criterios fueron $\text{SARIMA}(1,1,0)(1,0,1)_{12}$ y $\text{SARIMA}(1,1,1)(1,0,1)_{12}$, donde el primero supera por diferencias de aproximadamente 2 en AIC y BIC, sin embargo, en el SBC está por arriba por alrededor de 5 puntos, este es el mayor indicador para elegir como modelo ganador a $\text{SARIMA}(1,1,0)(1,0,1)_{12}$.
 
+### Diagnósticos
+
 ```{r}
 supuestos <- validar_sarima(z=serie, orden = c(1,1,0), estacional = c(1,0,1), incluir_constante = FALSE)
 ```
@@ -233,9 +241,15 @@ supuestos$ljung_box
 supuestos$graf_acf
 ```
 
+Para todos los valores de $K$ no se rechaza $H_0$ en la prueba de Ljung-Box, por lo que, con un nivel de significancia del 5%, hay evidencia muestral suficiente para sugerir que no hay autocorrelación significativa en los residuos hasta el rezago $K$ (para los 3 $K$), por lo que el modelo logra captar bien la estructura temporal. Esto también se concluye con la ACF de los residuos, donde ningún rezago supera la banda de significancia.
+
 ```{r}
 supuestos$coeficientes
 ```
+
+Todos los coeficientes superan el umbral $\vert{}t\vert{} > 2$ (`ar1` con $t = -3,36$, `sar1` con $t = 18,41$ y `sma1` con $t = 4,02$), por lo que individualmente aportan información al ajuste.
+
+El parámetro autorregresivo vale $\hat{\phi}_1 = -0,2940$, ubicándose claramente dentro de la región de estacionariedad ($\vert{}\hat{\phi}_1\vert{} < 1$). El coeficiente autorregresivo estacional vale $\hat{\Phi}_1 = 0,9782$ (muy cercano a 1). Esto indica que el polinomio $(1 - 0,9782 B^{12})$ está imitando un operador de diferencia estacional $\nabla_{12} = (1 - B^{12})$. Al mismo tiempo, el parámetro de media móvil estacional es muy alto ($\hat{\Theta}_1 = 0,8381$). Cuando en un modelo estacional mixto $(1,0,1)_{12}$ tanto $\hat{\Phi}_1$ como $\hat{\Theta}_1$ son muy cercanos a $1$, ambos factores tienden a cancelarse entre sí ($\frac{1 - 0,8381 B^{12}}{1 - 0,9782 B^{12}}$).
 
 ```{r}
 supuestos$normalidad
@@ -245,8 +259,20 @@ supuestos$normalidad
 supuestos$graf_qq
 ```
 
+La prueba de Jarque-Bera tiene un valor p \> 0.05, por lo que con un nivel de significancia del 5%, no se rechaza $H_0$, así se acepta normalidad en los residuos. Esto también se ve en la asímetria (muy cercana a 0) y en la curtosis (aproximadamente 3). El QQ-plot tiene la mayoría de puntos pegados de la línea teórica, a excepción de algunos puntos en los extremos, aunque estos representan una porción considerablemente pequeña en comparación al número total de residuos, por lo que se acepta normalidad de forma visual también.
+
 ```{r}
 supuestos$sobreajuste
 ```
+
+Agregar un segundo término autorregresivo (`ar2` en $\text{SARIMA}(2,1,0)(1,0,1)_{12}$) resulta estadísticamente no significativo ($\hat{\phi}_2 = -0,1236$, $t = -1,40$, $\vert{}t\vert{} \le 2$), por lo que el orden $p = 1$ es suficiente.
+
+Agregar un término de media móvil (`ma1` en $\text{SARIMA}(1,1,1)(1,0,1)_{12}$) hace que no se cumple invertibilidad ($\hat{\theta_1}=1$). Un parámetro MA con $\vert{}\hat{\theta}\vert{} \ge 0,99$ evidencia sobre-diferenciación y cancelación con el operador $\nabla$, invalidando este modelo.
+
+Tanto al incorporar `sar2` ($\text{SARIMA}(1,1,0)(2,0,1)_{12}$, $\hat{\Phi}_2 = -0,1979$, $t = -2,02$) como al incorporar `sma2` ($\text{SARIMA}(1,1,0)(1,0,2)_{12}$, $\hat{\Theta}_2 = 0,1864$, $t = 2,03$), los estadísticos quedan apenas en el borde del umbral crítico ($\vert{}t\vert{} \approx 2$).
+
+Este comportamiento no responde a una verdadera estructura estacional de orden 2, sino a una consecuencia directa de la **casi raíz unitaria estacional** ($\hat{\Phi}_1 = 0,9782$) y la **casi cancelación de factores** ($\hat{\Phi}_1 \approx \hat{\Theta}_1$) detectadas en el modelo base, que vuelven inestable la estimación al añadir más parámetros en $B^{12}$.
+
+Las pruebas de sobreajuste confirman que el reloj regular no requiere mayor complejidad, pero que la parte estacional $(1,0,1)_{12}$ presenta redundancia y proximidad a una raíz unitaria estacional. En lugar de escalar a modelos de orden estacional 2, el diagnóstico indica que se debe reemplazar $(1,0,1)_{12}$ por una estructura estacional más parsimoniosa: ya sea introduciendo la diferencia estacional ($D = 1$) mediante $\text{SARIMA}(1,1,0)(0,1,1)_{12}$ (o $(0,1,1)(0,1,1)_{12}$) para absorber la raíz unitaria en $B^{12}$, o manteniendo $D = 0$ con un único factor estacional simple ($\text{SARIMA}(1,1,0)(1,0,0)_{12}$ o $(1,1,0)(0,0,1)_{12}$.
 
 ## Referencias bibliográficas
